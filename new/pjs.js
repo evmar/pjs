@@ -89,12 +89,25 @@ function genAsStmt(sexp, outVar) {
   return code;
 }
 
-function genAsExpr(sexp) {
+function genAsExpr(sexp, prec) {
   var g = gen2(sexp);
   if (!g.expr) {
     throw new Error("in " + sexp + " stmt here not supported, had code " + g.code);
   }
+  if (!(prec in precTable)) {
+    throw new Error('unknown precedence: ' + prec);
+  }
+  prec = precTable[prec];
+  if (prec > g.prec) {
+    g.code = '(' + g.code + ')';
+  }
   return g.code;
+}
+
+function genAsArgs(list) {
+  return list.map(function(e) {
+    return genAsExpr(e, ',');
+  }).join(', ');
 }
 
 function mkStmt(code) {
@@ -106,31 +119,38 @@ function stringQuote(str) {
 }
 
 var precTable = {
-  'lit': 0,
-  'function': 0,
-  'new': 0,
-  'list': 0,  // e.g. [1, 2, 3]
-  'call': 0,  // e.g. foo(bar)
+  'lit': 100,
+  
+  '[]': 80,  // e.g. foo in foo[bar]
 
-  'instanceof': 0,
+  '*':  60,
+  '/':  60,
+  '+':  50,
+  '-':  50,
+
+  '<':  30,
+  '==': 30,
+  '!=': 30,
+
+  'function': 1,
+  'new': 1,
+  'list': 1,  // e.g. [1, 2, 3]
+  'call': 1,  // e.g. foo in an expr like foo(bar)
+  ',': 1,  // comma-separated arg, e.g. bar in an expr like foo(bar)
+
+  'instanceof': 1,
   'obj': 1,  // object literal, e.g. {1: 2}.
 
   '.':  1,
 
-  '<':  1,
-
   '=':  1,
-  '==': 1,
-  '!=': 1,
   '+=': 1,
 
   '&&': 1,
 
-  '+':  1,
-  '-':  1,
-
-  '[]': 1,
   '()': 1,  // forced parens
+  
+  'none': 0,
 };
 
 function mkExpr(code, prec) {
@@ -163,15 +183,19 @@ function gen2(sexp, outVar) {
 
   if (symlib.isSymbol(sexp[0])) {
     switch (sexp[0].sym()) {
-    case '+': case '-': case '=': case '<': case '&&': case '!=': case '+=': case '==': case '>=':
-      return mkExpr('(' + sexp.slice(1).map(genAsExpr).join(sexp[0].sym()) + ')', sexp[0].sym());
+    case '+': case '-': case '*': case '=': case '<': case '&&': case '!=': case '+=': case '==': case '>=':
+      var op = sexp[0].sym();
+      var exprs = sexp.slice(1).map(function(e) {
+        return genAsExpr(e, op);
+      });
+      return mkExpr(exprs.join(op), op);
     case '.':
-      var obj = genAsExpr(sexp[1]);
+      var obj = genAsExpr(sexp[1], '.');
       var attr = sexp[2].sym();
       var args = sexp.slice(3);
       var str = obj + '.' + attr;
       if (args.length > 0) {
-        str += '(' + args.map(genAsExpr).join(',') + ')';
+        str += '(' + genAsArgs(args) + ')';
       }
       return mkExpr(str, '.');
     case 'var':
@@ -237,11 +261,11 @@ function gen2(sexp, outVar) {
     case 'throw':
       // Intentionally disregard outVar -- the exception throw will
       // never set it.
-      return mkStmt('throw ' + genAsExpr(sexp[1]) + ';');
+      return mkStmt('throw ' + genAsExpr(sexp[1], 'none') + ';');
     case 'switch':
-      var js = 'switch (' + genAsExpr(sexp[1]) + ') {';
+      var js = 'switch (' + genAsExpr(sexp[1], 'none') + ') {';
       sexp.slice(2).forEach(function(scase) {
-        var str = 'case ' + genAsExpr(scase[0]) + ':\n';
+        var str = 'case ' + genAsExpr(scase[0], 'none') + ':\n';
         if (symlib.isSymbol(scase[0]) && scase[0].sym() == 'default') {
           str = 'default:\n';
         }
@@ -252,17 +276,19 @@ function gen2(sexp, outVar) {
       js += '}';
       return mkStmt(js);
     case 'at':
-      return mkExpr(genAsExpr(sexp[1]) + '[' + genAsExpr(sexp[2]) + ']', '[]');
+      return mkExpr(genAsExpr(sexp[1], '[]') + '[' + genAsExpr(sexp[2], 'none') + ']', '[]');
     case 'while':
-      return mkStmt('while (' + genAsExpr(sexp[1]) + ') {\n' +
-        genStmts(sexp.slice(2)) +
-        '}');
+      var cond = genAsExpr(sexp[1], 'none');
+      var body = genStmts(sexp.slice(2));
+      return mkStmt('while (' + cond +  ') {\n' + body + '}');
     case 'break':
       return mkStmt('break;');
     case 'continue':
       return mkStmt('continue;');
     case 'new':
-      return mkExpr('new ' + sexp[1].sym() + '(' + sexp.slice(2).map(genAsExpr).join(',') + ')', 'new');
+      // TODO: rewrite as a macro arounc a single-arg form
+      // e.g. (new x) is builtin, while (new x y z) is (new (x y z)).
+      return mkExpr('new ' + sexp[1].sym() + '(' + genAsArgs(sexp.slice(2)) + ')', 'new');
     case 'if':
       if (sexp.length < 3 || sexp.length > 4) {
         throw 'bad if';
@@ -290,7 +316,10 @@ function gen2(sexp, outVar) {
       return mkStmt(genStmts(sexp.slice(1), outVar));
     case 'list':
       // XXX rewrite as macro?
-      return mkExpr("[" + sexp.slice(1).map(genAsExpr) + "]", 'list');
+      var args = sexp.slice(1).map(function(e) {
+        return genAsExpr(e, ',');
+      });
+      return mkExpr("[" + genAsArgs(sexp.slice(1)) + "]", 'list');
     case 'qq':
       return gen2(qqlib.qq(sexp[1]), outVar);
     case 'pp':
@@ -310,7 +339,7 @@ function gen2(sexp, outVar) {
         } else {
           throw new Error('cannot make obj literal with ' + key);
         }
-        var val = genAsExpr(sexp[i+1]);
+        var val = genAsExpr(sexp[i+1], ',');
         js += key + ':' + val;
       }
       js += '}';
@@ -331,7 +360,9 @@ function gen2(sexp, outVar) {
     }
   }
 
-  return mkExpr(genAsExpr(sexp[0]) + '(' + sexp.slice(1).map(genAsExpr).join(',') + ')', 'call');
+  var func = genAsExpr(sexp[0], '()');
+  var args = genAsArgs(sexp.slice(1));
+  return mkExpr(func + '(' + args + ')', 'call');
 }
 
 function genStmts(sexps, outVar) {
