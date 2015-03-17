@@ -121,6 +121,10 @@ function stringQuote(str) {
 var precTable = {
   'lit': 100,
   
+  'call': 91,  // e.g. foo in foo(bar)
+
+  '.':  90,  // e.g. foo in foo.bar
+
   '[]': 80,  // e.g. foo in foo[bar]
 
   '*':  60,
@@ -135,13 +139,10 @@ var precTable = {
   'function': 1,
   'new': 1,
   'list': 1,  // e.g. [1, 2, 3]
-  'call': 1,  // e.g. foo in an expr like foo(bar)
   ',': 1,  // comma-separated arg, e.g. bar in an expr like foo(bar)
 
   'instanceof': 1,
   'obj': 1,  // object literal, e.g. {1: 2}.
-
-  '.':  1,
 
   '=':  1,
   '+=': 1,
