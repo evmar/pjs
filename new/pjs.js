@@ -150,7 +150,7 @@ var precTable = {
   '&&': 1,
 
   '()': 1,  // forced parens
-  
+
   'none': 0,
 };
 
@@ -326,7 +326,9 @@ function gen2(sexp, outVar) {
     case 'pp':
       return mkExpr('(' + genAsExpr(sexp[1]) + ')', '()');
     case 'instanceof':
-      return mkExpr('(' + genAsExpr(sexp[1]) + ' instanceof ' + genAsExpr(sexp[2]) + ')', 'instanceof');
+      var left = genAsExpr(sexp[1], 'instanceof');
+      var right = genAsExpr(sexp[2], 'instanceof');
+      return mkExpr(left + ' instanceof ' + right, 'instanceof');
     case 'obj':
       var js = '{';
       for (var i = 1; i < sexp.length; i += 2) {
