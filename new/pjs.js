@@ -118,39 +118,44 @@ function stringQuote(str) {
   return "\"" + str + "\"";
 }
 
+// From https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Operator_Precedence
+// TODO: maybe use http://es5.github.io/#A.3 instead.
 var precTable = {
-  'lit': 100,
+  'lit': 19,
+  'list': 19,  // e.g. [1, 2, 3]
+
+  '[]': 18,  // e.g. foo in foo[bar]
+  '.':  18,  // e.g. foo in foo.bar
+  'new': 18,
   
-  'call': 91,  // e.g. foo in foo(bar)
+  'call': 17,  // e.g. foo in foo(bar)
+  
+  '!': 15,
+  '~': 15,
 
-  '.':  90,  // e.g. foo in foo.bar
+  '*':  14,
+  '/':  14,
+  '%':  14,
 
-  '[]': 80,  // e.g. foo in foo[bar]
+  '+':  13,
+  '-':  13,
 
-  '*':  60,
-  '/':  60,
-  '+':  50,
-  '-':  50,
+  '<':  11,
+  'instanceof': 11,
 
-  '<':  30,
-  '==': 30,
-  '!=': 30,
+  '==': 10,
+  '!=': 10,
 
-  'function': 1,
-  'new': 1,
-  'list': 1,  // e.g. [1, 2, 3]
-  ',': 1,  // comma-separated arg, e.g. bar in an expr like foo(bar)
-
-  'instanceof': 1,
   'obj': 1,  // object literal, e.g. {1: 2}.
 
-  '=':  1,
-  '+=': 1,
+  '&&': 6,
 
-  '&&': 1,
+  '=':  3,
+  '+=': 3,
 
-  '()': 1,  // forced parens
+  '()': 19,  // forced parens
 
+  ',': 0,  // comma-separated arg, e.g. bar in an expr like foo(bar)
   'none': 0,
 };
 
@@ -237,7 +242,7 @@ function gen2(sexp, outVar) {
       }
       js += genStmts(body);
       js += '}\n';
-      return mkExpr(js, 'function');
+      return mkExpr(js, 'lit');
     case 'return':
       var body = gen2(sexp[1], 'return');
       if (body.expr) {
