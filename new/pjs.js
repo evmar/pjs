@@ -128,7 +128,12 @@ var precTable = {
   '.':  18,  // e.g. foo in foo.bar
   'new': 18,
   
-  'call': 17,  // e.g. foo in foo(bar)
+  // NOTE: this is 17 in the MDN docs, but that would imply an
+  // expression like foo().bar would need parens like (foo()).bar.
+  // The reason it doesn't is that the ES5 grammar has extra entries
+  // for CallExpression . IdentifierName -- that is, subscripting has
+  // multiple entries in the grammar.
+  'call': 18,  // e.g. foo in foo(bar)
   
   '!': 15,
   '~': 15,
