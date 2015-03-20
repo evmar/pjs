@@ -36,3 +36,5 @@
 
 (function foo ()
   3)
+
+(assert (== x 3) "x must be 3")

@@ -27,3 +27,10 @@ function forEach(name, list) {
   ]);
 }
 exports.forEach = forEach;
+
+function assert(exp, message) {
+  return [pjs.sym("if"), [pjs.sym("!"), exp],
+    [pjs.sym("throw"), [pjs.sym("new"), pjs.sym("Error"), message]]
+  ];
+}
+exports.assert = assert;
