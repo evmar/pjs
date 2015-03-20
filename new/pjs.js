@@ -80,8 +80,7 @@ function genAsStmt(sexp, outVar) {
         code = outVar + "=" + code + ";";
       }
     } else {
-      var end = code[code.length - 1];
-      if (end != ';' && end != '}') {
+      if (!symlib.isSymbol(sexp[0], 'function')) {
         code += ';';
       }
     }

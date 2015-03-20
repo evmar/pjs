@@ -4,10 +4,10 @@ function Symbol(name) {
 }
 Symbol.prototype.toString = function() {
   return "sym:" + this.symbol + "";
-}
+};
 Symbol.prototype.sym = function() {
   return this.symbol;
-}
+};
 
 function isSymbol(obj, match) {
   if (!(obj instanceof Symbol)) {

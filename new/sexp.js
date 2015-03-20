@@ -91,7 +91,7 @@ Reader.prototype.read = function() {
     throw "shouldn't be reached";
   }
   return null;
-}
+};
 
 function parse(data) {
   var r = new Reader("(" + data.toString() + ")");
