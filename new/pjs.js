@@ -147,7 +147,9 @@ var precTable = {
   '-':  13,
 
   '<':  11,
+  '>':  11,
   'instanceof': 11,
+  'in': 11,
 
   '==': 10,
   '!=': 10,
@@ -195,12 +197,12 @@ function gen2(sexp, outVar) {
 
   if (symlib.isSymbol(sexp[0])) {
     switch (sexp[0].sym()) {
-    case '+': case '-': case '*': case '=': case '<': case '&&': case '!=': case '+=': case '==': case '>=':
+    case '+': case '-': case '*': case '=': case '<': case '>': case '&&': case '!=': case '+=': case '==': case '>=': case 'in':
       var op = sexp[0].sym();
       var exprs = sexp.slice(1).map(function(e) {
         return genAsExpr(e, op);
       });
-      return mkExpr(exprs.join(op), op);
+      return mkExpr(exprs.join(' ' + op + ' '), op);
     case '++': case '--': case '!':
       var op = sexp[0].sym();
       return mkExpr(op + genAsExpr(sexp[1], op), op);
