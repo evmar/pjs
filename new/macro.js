@@ -2,7 +2,7 @@
 function fn(args, expr) {
   return [pjs.sym("function"), args, [pjs.sym("return"), expr]];
 };
-(exports.fn = fn);
+exports.fn = fn;
 
 function caseSexp(sexp) {
   var cases = Array.prototype.slice.call(arguments, 1);
@@ -13,7 +13,7 @@ function caseSexp(sexp) {
     [pjs.sym("default"), [pjs.sym("if"), [pjs.sym("pjs.isSymbol"), sexp], pjs.assoc(cases, pjs.sym("symbol")), pjs.assoc(cases, pjs.sym("sexp"))]]
   ];
 };
-(exports.caseSexp = caseSexp);
+exports.caseSexp = caseSexp;
 
 function forEach(name, list) {
   var body = Array.prototype.slice.call(arguments, 2);
@@ -26,4 +26,4 @@ function forEach(name, list) {
     ], body
   ]);
 };
-(exports.forEach = forEach);
+exports.forEach = forEach;
