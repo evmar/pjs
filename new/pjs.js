@@ -135,8 +135,13 @@ var precTable = {
   // multiple entries in the grammar.
   'call': 18,  // e.g. foo in foo(bar)
   
+  'x++': 16,
+  'x--': 16,
+
   '!': 15,
   '~': 15,
+  '++x': 15,
+  '--x': 15,
 
   '*':  14,
   '/':  14,
@@ -358,6 +363,10 @@ function gen2(sexp, outVar) {
       js += '}';
       return mkExpr(js, 'obj');
       break;
+    case '++':
+      return mkExpr('++' + genAsExpr(sexp[1], '++x'), '++x');
+    case '--':
+      return mkExpr('--' + genAsExpr(sexp[1], '--x'), '--x');
     case '#macro':
       var name = sexp[1];
       var args = sexp[2];

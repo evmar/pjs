@@ -18,14 +18,14 @@ function Reader(str) {
 Reader.prototype.read = function() {
   while (this.ofs < this.str.length) {
     var c = this.str[this.ofs];
-    ++(this.ofs);
+    ++this.ofs;
     switch (c) {
       case " ":
         continue;
       case "\n":
         continue;
       case ";":
-        for (; this.ofs < this.str.length; ++(this.ofs)) {
+        for (; this.ofs < this.str.length; ++this.ofs) {
           if (this.str[this.ofs] == "\n") {
             break;
           }
@@ -40,14 +40,14 @@ Reader.prototype.read = function() {
         if (this.str[this.ofs] != ")") {
           throw "expected rparen";
         }
-        ++(this.ofs);
+        ++this.ofs;
         return sexp;
       case ")":
-        --(this.ofs);
+        --this.ofs;
         return null;
       case "\x22":
         var str = "";
-        for (; this.ofs < this.str.length; ++(this.ofs)) {
+        for (; this.ofs < this.str.length; ++this.ofs) {
           var c = this.str[this.ofs];
           if (c == "\x22") {
             break;
@@ -57,13 +57,13 @@ Reader.prototype.read = function() {
         if (this.str[this.ofs] != "\x22") {
           throw "expected rparen";
         }
-        ++(this.ofs);
+        ++this.ofs;
         return str;
       case "`":
         return [sym("qq"), this.read()];
       case ",":
         if (this.str[this.ofs] == "@") {
-          ++(this.ofs);
+          ++this.ofs;
           return [sym("uqs"), this.read()];
         }
         return [sym("uq"), this.read()];
@@ -75,7 +75,7 @@ Reader.prototype.read = function() {
           throw "bad char " + c + " at offset " + this.ofs;
         }
         var atom = c;
-        for (; this.ofs < this.str.length; ++(this.ofs)) {
+        for (; this.ofs < this.str.length; ++this.ofs) {
           var c = this.str[this.ofs];
           if (!(isAtomChar(c))) {
             break;
