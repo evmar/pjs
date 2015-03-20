@@ -2,7 +2,7 @@
 var sym = require("./symbol.js").sym;
 
 function isAtomChar(char) {
-  var re = new RegExp("[a-zA-Z_.\\[\\]0-9&!=|+<>#{}-]");
+  var re = new RegExp("[a-zA-Z_.\\[\\]0-9&!=|+<>#{}*-]");
   return re.test(char);
 };
 
@@ -12,11 +12,11 @@ function isNumber(atom) {
 };
 
 function Reader(str) {
-  (this.str = str);
-  (this.ofs = 0);
+  this.str = str;
+  this.ofs = 0;
 };
-(Reader.prototype.read = function() {
-  while ((this.ofs < this.str.length)) {
+Reader.prototype.read = function() {
+  while (this.ofs < this.str.length) {
     var c = this.str[this.ofs];
     ++(this.ofs);
     switch (c) {
@@ -25,9 +25,8 @@ function Reader(str) {
       case "\n":
         continue;
       case ";":
-        for (;
-          (this.ofs < this.str.length); ++(this.ofs)) {
-          if ((this.str[this.ofs] == "\n")) {
+        for (; this.ofs < this.str.length; ++(this.ofs)) {
+          if (this.str[this.ofs] == "\n") {
             break;
           }
         }
@@ -35,10 +34,10 @@ function Reader(str) {
       case "(":
         var sexp = [];
         for (var s;
-          ((s = this.read()) != null);) {
+          (s = this.read()) != null;) {
           sexp.push(s);
         }
-        if ((this.str[this.ofs] != ")")) {
+        if (this.str[this.ofs] != ")") {
           throw "expected rparen";
         }
         ++(this.ofs);
@@ -48,15 +47,14 @@ function Reader(str) {
         return null;
       case "\x22":
         var str = "";
-        for (;
-          (this.ofs < this.str.length); ++(this.ofs)) {
+        for (; this.ofs < this.str.length; ++(this.ofs)) {
           var c = this.str[this.ofs];
-          if ((c == "\x22")) {
+          if (c == "\x22") {
             break;
           }
-          (str += c);
+          str += c;
         }
-        if ((this.str[this.ofs] != "\x22")) {
+        if (this.str[this.ofs] != "\x22") {
           throw "expected rparen";
         }
         ++(this.ofs);
@@ -64,7 +62,7 @@ function Reader(str) {
       case "`":
         return [sym("qq"), this.read()];
       case ",":
-        if ((this.str[this.ofs] == "@")) {
+        if (this.str[this.ofs] == "@") {
           ++(this.ofs);
           return [sym("uqs"), this.read()];
         }
@@ -74,16 +72,15 @@ function Reader(str) {
         return [sym("pjs.sym"), symbol.sym()];
       default:
         if (!(isAtomChar(c))) {
-          throw ("bad char " + c + " at offset " + this.ofs);
+          throw "bad char " + c + " at offset " + this.ofs;
         }
         var atom = c;
-        for (;
-          (this.ofs < this.str.length); ++(this.ofs)) {
+        for (; this.ofs < this.str.length; ++(this.ofs)) {
           var c = this.str[this.ofs];
           if (!(isAtomChar(c))) {
             break;
           }
-          (atom += c);
+          atom += c;
         }
         if (isNumber(atom)) {
           return parseInt(atom);
@@ -94,11 +91,11 @@ function Reader(str) {
     throw "shouldn't be reached";
   }
   return null;
-});
+};
 
 function parse(data) {
-  var r = new Reader(("(" + data.toString() + ")"));
+  var r = new Reader("(" + data.toString() + ")");
   return r.read();
 };
-(exports.parse = parse);
-(exports.Reader = Reader);
+exports.parse = parse;
+exports.Reader = Reader;
