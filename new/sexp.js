@@ -71,13 +71,13 @@ Reader.prototype.read = function() {
         var symbol = this.read();
         return [sym("pjs.sym"), symbol.sym()];
       default:
-        if (!(isAtomChar(c))) {
+        if (!isAtomChar(c)) {
           throw "bad char " + c + " at offset " + this.ofs;
         }
         var atom = c;
         for (; this.ofs < this.str.length; ++this.ofs) {
           var c = this.str[this.ofs];
-          if (!(isAtomChar(c))) {
+          if (!isAtomChar(c)) {
             break;
           }
           atom += c;

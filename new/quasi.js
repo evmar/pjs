@@ -32,7 +32,7 @@ function qq(sexp) {
             parts.push(s[1]);
             cur = null;
           } else {
-            if (!(cur)) {
+            if (!cur) {
               cur = [pjs.sym("list")];
               parts.push(cur);
             }

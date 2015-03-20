@@ -8,7 +8,7 @@ PJS=new/pjs.js
 endif
 $(info Building using $(PJS))
 
-libs=sexp util macro quasi symbol
+libs=sexp util macro quasi symbol gen
 lib: $(foreach lib,$(libs),new/$(lib).js)
 new/%.js: lib/%.pjs $(PJS) lib/*
 	node $(PJS) $< $@

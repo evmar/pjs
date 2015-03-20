@@ -22,7 +22,7 @@ var symbols = {};
 
 function sym(name) {
   var s = symbols[name];
-  if (!(s)) {
+  if (!s) {
     s = new Symbol(name);
     symbols[name] = s;
   }
