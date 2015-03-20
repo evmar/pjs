@@ -251,7 +251,7 @@ function gen2(sexp, outVar) {
         js += genAsStmt([pjs.sym('var'), vararg, [pjs.sym('Array.prototype.slice.call'), pjs.sym('arguments'), i]], null);
       }
       js += genStmts(body);
-      js += '}\n';
+      js += '}';
       return mkExpr(js, 'lit');
     case 'return':
       var body = gen2(sexp[1], 'return');

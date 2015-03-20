@@ -4,17 +4,17 @@ var sym = require("./symbol.js").sym;
 function isAtomChar(char) {
   var re = new RegExp("[a-zA-Z_.\\[\\]0-9&!=|+<>#{}*-]");
   return re.test(char);
-};
+}
 
 function isNumber(atom) {
   var re = new RegExp("^\\d+$");
   return re.test(atom);
-};
+}
 
 function Reader(str) {
   this.str = str;
   this.ofs = 0;
-};
+}
 Reader.prototype.read = function() {
   while (this.ofs < this.str.length) {
     var c = this.str[this.ofs];
@@ -91,11 +91,11 @@ Reader.prototype.read = function() {
     throw "shouldn't be reached";
   }
   return null;
-};
+}
 
 function parse(data) {
   var r = new Reader("(" + data.toString() + ")");
   return r.read();
-};
+}
 exports.parse = parse;
 exports.Reader = Reader;

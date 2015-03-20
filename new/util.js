@@ -7,5 +7,5 @@ function assoc(list, key) {
     }
   }
   throw "no '" + key + "' in list";
-};
+}
 exports.assoc = assoc;

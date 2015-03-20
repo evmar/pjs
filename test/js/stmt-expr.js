@@ -7,7 +7,7 @@ function vars() {
   } else {
     x = 3;
   }
-};
+}
 
 function nestedIf() {
   if (1) {
@@ -15,7 +15,7 @@ function nestedIf() {
   } else {
     return 3;
   }
-};
+}
 
 function doubleIf() {
   if (1) {
@@ -26,7 +26,7 @@ function doubleIf() {
   if (__pjs_0) {
     4;
   }
-};
+}
 
 function switches() {
   switch (x()) {
@@ -45,4 +45,4 @@ function switches() {
     case 1:
       return 3;
   }
-};
+}

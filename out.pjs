@@ -33,3 +33,6 @@
 
 (forEach x foo
   (console.log x))
+
+(function foo ()
+  3)
