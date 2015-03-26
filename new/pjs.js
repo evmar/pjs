@@ -20,6 +20,7 @@ var util = require('./util');
 var macrolib = require('./macro');
 var qqlib = require('./quasi');
 var symlib = require('./symbol');
+var gen = require('./gen');
 
 // Expose a global pjs object so it can be found by macro evals.
 global.pjs = {
@@ -355,6 +356,7 @@ function gen2(sexp, outVar) {
         if (pjs.isSymbol(key)) {
           key = key.sym();
         } else if (typeof key == 'string') {
+          key = stringQuote(key);
         } else {
           throw new Error('cannot make obj literal with ' + key);
         }
