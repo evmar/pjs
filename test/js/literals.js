@@ -4,3 +4,4 @@
 "foobar";
 true;
 false;
+a;

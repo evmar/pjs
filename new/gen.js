@@ -100,11 +100,11 @@ function stringQuote(str) {
 exports.stringQuote = stringQuote;
 
 function genForm(sexp) {
-  var op = sexp[0].sym;
+  var op = (sexp[0].sym)();
   if (op in binops) {
     var args = sexp.slice(1);
     var exprs = args.map(function(e) {
-      return genAsExpr(e, op);
+      return jsExpr(e, op);
     });
     var js = exprs.join(" " + op + " ");
     return snippet(js, op);
@@ -131,7 +131,7 @@ function gen(sexp) {
       if (pjs.isSymbol(sexp)) {
         return snippet(sexp.sym(), "lit");
       } else {
-        return 0;
+        return genForm(sexp);
       }
   }
 }

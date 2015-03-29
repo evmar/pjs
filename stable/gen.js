@@ -55,19 +55,19 @@ var unops = {
 
 function jsStmt(sexp) {
   var g = gen(sexp);
-  if (!g.expr) {
+  if (!g.prec) {
     return g.code;
   }
   var code = g.code;
   if (!symlib.isSymbol(sexp[0], "function")) {
-    g.code += ";";
+    code += ";";
   }
   return code;
 }
 
 function jsExpr(sexp, prec) {
   var g = gen(sexp);
-  if (!g.expr) {
+  if (!g.prec) {
     throw new Error("in " + sexp + " stmt here not supported, had code " + g.code);
   }
   if (!(prec in precTable)) {
@@ -93,10 +93,6 @@ function snippet(code, prec) {
     prec: prec
   };
 }
-var gen2;
-exports.setGen2 = function(g) {
-  gen2 = g;
-};
 
 function stringQuote(str) {
   return "\x22" + str + "\x22";
@@ -104,11 +100,11 @@ function stringQuote(str) {
 exports.stringQuote = stringQuote;
 
 function genForm(sexp) {
-  var op = sexp[0].sym;
+  var op = (sexp[0].sym)();
   if (op in binops) {
     var args = sexp.slice(1);
     var exprs = args.map(function(e) {
-      return genAsExpr(e, op);
+      return jsExpr(e, op);
     });
     var js = exprs.join(" " + op + " ");
     return snippet(js, op);
@@ -128,14 +124,24 @@ function gen(sexp) {
     case "undefined":
       throw new Error("undefined sexp");
     case "string":
-      snippet(stringQuote(sexp), "lit");
+      return snippet(stringQuote(sexp), "lit");
     case "number":
-      snippet(sexp, "lit");
+      return snippet(sexp, "lit");
     default:
       if (pjs.isSymbol(sexp)) {
-        snippet(sexp.sym(), "lit");
+        return snippet(sexp.sym(), "lit");
       } else {
-        0;
+        return genForm(sexp);
       }
   }
 }
+
+function genStmts(sexps) {
+  var js = "";
+  for (var __pjs_1 = 0; __pjs_1 < sexps.length; ++__pjs_1) {
+    var sexp = sexps[__pjs_1];
+    js += jsStmt(sexp);
+  }
+  return js;
+}
+exports.genStmts = genStmts;
