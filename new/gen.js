@@ -110,7 +110,7 @@ function genForm(sexp) {
     return snippet(js, op);
   }
   if (op in unops) {
-    var js = op + genAsExpr(sexp[1], op);
+    var js = op + jsExpr(sexp[1], op);
     return snippet(js, op);
   }
   switch (op) {
