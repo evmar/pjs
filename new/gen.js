@@ -55,19 +55,19 @@ var unops = {
 
 function jsStmt(sexp) {
   var g = gen(sexp);
-  if (!g.expr) {
+  if (!g.prec) {
     return g.code;
   }
   var code = g.code;
   if (!symlib.isSymbol(sexp[0], "function")) {
-    g.code += ";";
+    code += ";";
   }
   return code;
 }
 
 function jsExpr(sexp, prec) {
   var g = gen(sexp);
-  if (!g.expr) {
+  if (!g.prec) {
     throw new Error("in " + sexp + " stmt here not supported, had code " + g.code);
   }
   if (!(prec in precTable)) {
@@ -93,10 +93,6 @@ function snippet(code, prec) {
     prec: prec
   };
 }
-var gen2;
-exports.setGen2 = function(g) {
-  gen2 = g;
-};
 
 function stringQuote(str) {
   return "\x22" + str + "\x22";
