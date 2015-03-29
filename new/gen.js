@@ -82,6 +82,14 @@ function stringQuote(str) {
 }
 exports.stringQuote = stringQuote;
 
+function genForm(sexp) {
+  var op = sexp[0].sym;
+  switch (op) {
+    case "+":
+    case "-":
+  }
+}
+
 function gen(sexp) {
   switch (typeof(sexp)) {
     case "undefined":
@@ -89,10 +97,10 @@ function gen(sexp) {
     case "string":
       snippet(stringQuote(sexp), "lit");
     case "number":
-      0;
+      snippet(sexp, "lit");
     default:
       if (pjs.isSymbol(sexp)) {
-        0;
+        snippet(sexp.sym(), "lit");
       } else {
         0;
       }
