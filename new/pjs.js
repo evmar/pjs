@@ -114,59 +114,7 @@ function mkStmt(code) {
   return {code:code, expr:false};
 }
 
-function stringQuote(str) {
-  return "\"" + str + "\"";
-}
-
-// From https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Operator_Precedence
-// TODO: maybe use http://es5.github.io/#A.3 instead.
-var precTable = {
-  'lit': 19,
-  'list': 19,  // e.g. [1, 2, 3]
-
-  '[]': 18,  // e.g. foo in foo[bar]
-  '.':  18,  // e.g. foo in foo.bar
-  'new': 18,
-  
-  // NOTE: this is 17 in the MDN docs, but that would imply an
-  // expression like foo().bar would need parens like (foo()).bar.
-  // The reason it doesn't is that the ES5 grammar has extra entries
-  // for CallExpression . IdentifierName -- that is, subscripting has
-  // multiple entries in the grammar.
-  'call': 18,  // e.g. foo in foo(bar)
-  
-  '!': 15,
-  '~': 15,
-  '++': 15,
-  '--': 15,
-
-  '*':  14,
-  '/':  14,
-  '%':  14,
-
-  '+':  13,
-  '-':  13,
-
-  '<':  11,
-  '>':  11,
-  'instanceof': 11,
-  'in': 11,
-
-  '==': 10,
-  '!=': 10,
-
-  'obj': 1,  // object literal, e.g. {1: 2}.
-
-  '&&': 6,
-
-  '=':  3,
-  '+=': 3,
-
-  '()': 19,  // forced parens
-
-  ',': 0,  // comma-separated arg, e.g. bar in an expr like foo(bar)
-  'none': 0,
-};
+var precTable = gen.precTable;
 
 function mkExpr(code, prec) {
   if (!(prec in precTable)) {
@@ -183,7 +131,7 @@ function gen2(sexp, outVar) {
   }
 
   if (typeof sexp === 'string') {
-    return mkExpr(stringQuote(sexp), 'lit');
+    return mkExpr(gen.stringQuote(sexp), 'lit');
   }
   if (typeof sexp === 'number') {
     return mkExpr(sexp, 'lit');
@@ -356,7 +304,7 @@ function gen2(sexp, outVar) {
         if (pjs.isSymbol(key)) {
           key = key.sym();
         } else if (typeof key == 'string') {
-          key = stringQuote(key);
+          key = gen.stringQuote(key);
         } else {
           throw new Error('cannot make obj literal with ' + key);
         }

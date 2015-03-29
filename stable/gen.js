@@ -27,13 +27,13 @@ var precTable = {
   "=": 3,
   "+=": 3,
   "()": 19,
-  ",": 0,
-  "none": 0
+  ",": 1,
+  "none": 1
 };
 exports.precTable = precTable;
 
-function stmt(sexp) {
-  var g = gen2(sexp);
+function jsStmt(sexp) {
+  var g = gen(sexp);
   if (!g.expr) {
     return g.code;
   }
@@ -44,8 +44,8 @@ function stmt(sexp) {
   return code;
 }
 
-function expr(sexp, prec) {
-  var g = gen2(sexp);
+function jsExpr(sexp, prec) {
+  var g = gen(sexp);
   if (!g.expr) {
     throw new Error("in " + sexp + " stmt here not supported, had code " + g.code);
   }
@@ -57,5 +57,44 @@ function expr(sexp, prec) {
     return "(" + g.code + ")";
   } else {
     return g.code;
+  }
+}
+
+function snippet(code, prec) {
+  if (prec) {
+    if (!(prec in precTable)) {
+      throw new Error("unknown prec " + prec);
+    }
+    prec = precTable[prec];
+  }
+  return {
+    code: code,
+    prec: prec
+  };
+}
+var gen2;
+exports.setGen2 = function(g) {
+  gen2 = g;
+};
+
+function stringQuote(str) {
+  return "\x22" + str + "\x22";
+}
+exports.stringQuote = stringQuote;
+
+function gen(sexp) {
+  switch (typeof(sexp)) {
+    case "undefined":
+      throw new Error("undefined sexp");
+    case "string":
+      snippet(stringQuote(sexp), "lit");
+    case "number":
+      0;
+    default:
+      if (pjs.isSymbol(sexp)) {
+        0;
+      } else {
+        0;
+      }
   }
 }
