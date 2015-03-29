@@ -47,6 +47,11 @@ var binops = {
   "||": true,
   "in": true
 };
+var unops = {
+  "++": true,
+  "--": true,
+  "!": true
+};
 
 function jsStmt(sexp) {
   var g = gen(sexp);
@@ -106,6 +111,10 @@ function genForm(sexp) {
       return genAsExpr(e, op);
     });
     var js = exprs.join(" " + op + " ");
+    return snippet(js, op);
+  }
+  if (op in unops) {
+    var js = op + genAsExpr(sexp[1], op);
     return snippet(js, op);
   }
   switch (op) {
