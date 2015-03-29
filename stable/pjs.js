@@ -136,6 +136,9 @@ function gen2(sexp, outVar) {
   if (typeof sexp === 'number') {
     return mkExpr(sexp, 'lit');
   }
+  if (typeof sexp === 'boolean') {
+    return mkExpr(sexp, 'lit');
+  }
   if (symlib.isSymbol(sexp)) {
     return mkExpr(sexp.sym(), 'lit');
   }
@@ -313,15 +316,15 @@ function gen2(sexp, outVar) {
       }
       js += '}';
       return mkExpr(js, 'obj');
-      break;
     case '#macro':
-      var name = sexp[1];
-      var args = sexp[2];
+      var name = sexp[1].sym();
+      var args = sexp[2].map(function(a) { return a.sym(); });
       var body = sexp.slice(3);
 
-      var fn = new Function(args.join(','), genStmts(body));
+      var jsBody = genStmts(body);
+      var fn = new Function(args.join(','), jsBody);
       macros[name] = fn;
-      return mkExpr('/* macro definition */', 'comment');
+      return mkExpr('/* macro definition */', 'lit');
     default:
       if (macros[sexp[0].sym()]) {
         return genMacro(sexp, outVar);
