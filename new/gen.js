@@ -128,14 +128,24 @@ function gen(sexp) {
     case "undefined":
       throw new Error("undefined sexp");
     case "string":
-      snippet(stringQuote(sexp), "lit");
+      return snippet(stringQuote(sexp), "lit");
     case "number":
-      snippet(sexp, "lit");
+      return snippet(sexp, "lit");
     default:
       if (pjs.isSymbol(sexp)) {
-        snippet(sexp.sym(), "lit");
+        return snippet(sexp.sym(), "lit");
       } else {
-        0;
+        return 0;
       }
   }
 }
+
+function genStmts(sexps) {
+  var js = "";
+  for (var __pjs_1 = 0; __pjs_1 < sexps.length; ++__pjs_1) {
+    var sexp = sexps[__pjs_1];
+    js += jsStmt(sexp);
+  }
+  return js;
+}
+exports.genStmts = genStmts;

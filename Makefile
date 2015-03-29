@@ -21,8 +21,7 @@ update:
 tests=stmt-expr quasi prec literals
 test: $(foreach test,$(tests),test/js/$(test).js)
 test/js/%.js: test/%.pjs $(PJS) lib/*
-	node $(PJS) $< $@
-
+	node $(PJS) $(TESTFLAGS) $< $@
 
 #node $(PJS) -u -n $< $@ && cat $@
 out.js: out.pjs $(PJS) lib/* Makefile
