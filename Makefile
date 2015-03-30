@@ -18,7 +18,7 @@ diff:
 update:
 	cp new/* stable
 
-tests=stmt-expr quasi prec ops literals statements
+tests=stmt-expr quasi map prec ops literals statements
 test: $(foreach test,$(tests),test/js/$(test).js)
 test/js/%.js: test/%.pjs $(PJS) lib/*
 	node $(PJS) $(TESTFLAGS) $< $@
