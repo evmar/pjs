@@ -113,9 +113,8 @@ function genForm(sexp) {
     var js = op + jsExpr(sexp[1], op);
     return snippet(js, op);
   }
-  switch (op) {
-    case "+":
-    case "-":
+  if (!false) {
+    throw new Error("unimplemented");
   }
 }
 
