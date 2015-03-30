@@ -95,6 +95,20 @@ function genUnOp(sexp) {
   return snippet(js, op);
 }
 
+function genFunction(sexp) {
+  if (symlib.isSymbol(sexp[1])) {
+    var name = (sexp[1].sym)();
+    var args = sexp[2];
+    var body = sexp.slice(3);
+  } else {
+    var name = "";
+    var args = sexp[1];
+    var body = sexp.slice(2);
+  }
+  var jsargs;
+  var js = "function " + name + "(" + jsargs + ") {";
+}
+
 function genIf(sexp) {
   if (sexp.length < 3 || sexp.length > 4) {
     throw new Error("bad args to 'if'");
