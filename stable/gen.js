@@ -27,7 +27,6 @@ var precTable = {
   "||": 6,
   "=": 3,
   "+=": 3,
-  "()": 19,
   ",": 1,
   "none": 1
 };
@@ -80,7 +79,7 @@ function stringQuote(str) {
 exports.stringQuote = stringQuote;
 
 function genBinOp(sexp) {
-  var op = (sexp[0].sym)();
+  var op = sexp[0].sym();
   var args = sexp.slice(1);
   var exprs = args.map(function(e) {
     return jsExpr(e, op);
@@ -90,14 +89,14 @@ function genBinOp(sexp) {
 }
 
 function genUnOp(sexp) {
-  var op = (sexp[0].sym)();
+  var op = sexp[0].sym();
   var js = op + jsExpr(sexp[1], op);
   return snippet(js, op);
 }
 
 function genFunction(sexp) {
   if (symlib.isSymbol(sexp[1])) {
-    var name = (sexp[1].sym)();
+    var name = sexp[1].sym();
     var args = sexp[2];
     var body = sexp.slice(3);
   } else {
@@ -105,8 +104,8 @@ function genFunction(sexp) {
     var args = sexp[1];
     var body = sexp.slice(2);
   }
-  var jsargs = (args.map)(function(arg) {
-    return (arg.sym)();
+  var jsargs = args.map(function(arg) {
+    return arg.sym();
   }).join(",");
   var js = "function " + name + "(" + jsargs + ") {";
 }
@@ -126,7 +125,7 @@ function genIf(sexp) {
 }
 
 function genVar(sexp) {
-  var name = (sexp[1].sym)();
+  var name = sexp[1].sym();
   var js = "var " + name;
   if (sexp.length > 2) {
     var val = jsExpr(sexp[2], "none");
@@ -151,9 +150,9 @@ for (var __pjs_1 = 0; __pjs_1 < unops.length; ++__pjs_1) {
 }
 
 function genForm(sexp) {
-  var op = (sexp[0].sym)();
+  var op = sexp[0].sym();
   if (op in builtins) {
-    return (builtins[op])(sexp);
+    return builtins[op](sexp);
   }
   if (!false) {
     throw new Error("unimplemented");

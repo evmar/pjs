@@ -293,8 +293,6 @@ function gen2(sexp, outVar) {
       return mkExpr("[" + genAsArgs(sexp.slice(1)) + "]", 'list');
     case 'qq':
       return gen2(qqlib.qq(sexp[1]), outVar);
-    case 'pp':
-      return mkExpr('(' + genAsExpr(sexp[1]) + ')', '()');
     case 'instanceof':
       var left = genAsExpr(sexp[1], 'instanceof');
       var right = genAsExpr(sexp[2], 'instanceof');
@@ -334,7 +332,7 @@ function gen2(sexp, outVar) {
     }
   }
 
-  var func = genAsExpr(sexp[0], '()');
+  var func = genAsExpr(sexp[0], 'call');
   var args = genAsArgs(sexp.slice(1));
   return mkExpr(func + '(' + args + ')', 'call');
 }
