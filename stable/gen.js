@@ -24,6 +24,7 @@ var precTable = {
   "!=": 10,
   "obj": 1,
   "&&": 6,
+  "||": 6,
   "=": 3,
   "+=": 3,
   "()": 19,
@@ -110,12 +111,25 @@ function genForm(sexp) {
     return snippet(js, op);
   }
   if (op in unops) {
-    var js = op + genAsExpr(sexp[1], op);
+    var js = op + jsExpr(sexp[1], op);
     return snippet(js, op);
   }
   switch (op) {
-    case "+":
-    case "-":
+    case "if":
+      if (sexp.length < 3 || sexp.length > 4) {
+        throw new Error("bad args to 'if'");
+      }
+      var cond = jsExpr(sexp[1], "none");
+      var body = jsStmt(sexp[2]);
+      var js = "if (" + cond + ") {" + body + "}";
+      if (sexp.length == 4) {
+        var elsebody = jsStmt(sexp[3]);
+        js += " else {" += elsebody += "}";
+      }
+      return snippet(js);
+  }
+  if (!false) {
+    throw new Error("unimplemented");
   }
 }
 

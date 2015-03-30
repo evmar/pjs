@@ -1,0 +1,6 @@
+(if a b c)
+
+(if a
+  (if c
+    (if d e)
+    f))

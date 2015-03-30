@@ -149,7 +149,7 @@ function gen2(sexp, outVar) {
 
   if (symlib.isSymbol(sexp[0])) {
     switch (sexp[0].sym()) {
-    case '+': case '-': case '*': case '=': case '<': case '>': case '&&': case '!=': case '+=': case '==': case '>=': case 'in':
+    case '+': case '-': case '*': case '=': case '<': case '>': case '&&': case '!=': case '+=': case '==': case '>=': case 'in': case '||':
       var op = sexp[0].sym();
       var exprs = sexp.slice(1).map(function(e) {
         return genAsExpr(e, op);
