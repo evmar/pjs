@@ -124,7 +124,7 @@ function genForm(sexp) {
       var js = "if (" + cond + ") {" + body + "}";
       if (sexp.length == 4) {
         var elsebody = jsStmt(sexp[3]);
-        js += " else {" += elsebody += "}";
+        js += " else {" + elsebody + "}";
       }
       return snippet(js);
   }
