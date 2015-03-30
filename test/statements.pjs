@@ -4,3 +4,7 @@
   (if c
     (if d e)
     f))
+
+(var a)
+
+(var a (+ 3 4))

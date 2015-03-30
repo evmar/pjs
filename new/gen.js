@@ -127,6 +127,15 @@ function genForm(sexp) {
         js += " else {" + elsebody + "}";
       }
       return snippet(js);
+    case "var":
+      var name = (sexp[1].sym)();
+      var js = "var " + name;
+      if (sexp.length > 2) {
+        var val = jsExpr(sexp[2], "none");
+        js += " = " + val;
+      }
+      js += ";";
+      return snippet(js);
   }
   if (!false) {
     throw new Error("unimplemented");
