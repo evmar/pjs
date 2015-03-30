@@ -105,7 +105,9 @@ function genFunction(sexp) {
     var args = sexp[1];
     var body = sexp.slice(2);
   }
-  var jsargs;
+  var jsargs = (args.map)(function(arg) {
+    return (arg.sym)();
+  }).join(",");
   var js = "function " + name + "(" + jsargs + ") {";
 }
 

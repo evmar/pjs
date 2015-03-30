@@ -244,6 +244,8 @@ function gen2(sexp, outVar) {
       });
       js += '}';
       return mkStmt(js);
+    case 'map':
+      return gen2([[pjs.sym('.'), sexp[2], pjs.sym('map')], sexp[1]]);
     case 'at':
       return mkExpr(genAsExpr(sexp[1], '[]') + '[' + genAsExpr(sexp[2], 'none') + ']', '[]');
     case 'while':
