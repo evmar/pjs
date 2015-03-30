@@ -162,11 +162,16 @@ function gen2(sexp, outVar) {
       var obj = genAsExpr(sexp[1], '.');
       var attr = sexp[2].sym();
       var args = sexp.slice(3);
-      var str = obj + '.' + attr;
-      if (args.length > 0) {
-        str += '(' + genAsArgs(args) + ')';
+      if (args.length) {
+        // (. foo bar a b) is shorthand for ((. foo bar) a b).
+        sexp = sexp.slice(0, 3);
+        if (args.length == 1 && args[0].length == 0) {
+          // (. foo bar ()) is shorthand for ((. foo bar)).
+          args = [];
+        }
+        return gen2([sexp].concat(args));
       }
-      return mkExpr(str, '.');
+      return mkExpr(obj + '.' + attr, '.');
     case 'var':
       var name = sexp[1].sym();
       var js = 'var ' + name;
