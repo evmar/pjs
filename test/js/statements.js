@@ -31,3 +31,6 @@ function foo(bar, baz) {
 for (var i = 0; i < 4; ++i) {
   return i;
 }
+throw "foo";
+break;
+continue;

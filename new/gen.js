@@ -94,6 +94,14 @@ function genUnOp(sexp) {
   return snippet(js, op);
 }
 
+function genKeywordStatement(sexp) {
+  var body = "";
+  if (sexp[1]) {
+    body = " " + jsExpr(sexp[1], "none");
+  }
+  return snippet(sexp[0].sym() + body + ";");
+}
+
 function genFor(sexp) {
   var init = jsStmt(sexp[1], "none");
   var test = jsExpr(sexp[2], "none");
@@ -133,10 +141,6 @@ function genIf(sexp) {
   return snippet(js);
 }
 
-function genReturn(sexp) {
-  return snippet("return " + jsExpr(sexp[1], "none") + ";");
-}
-
 function genVar(sexp) {
   var name = sexp[1].sym();
   var js = "var " + name;
@@ -148,10 +152,13 @@ function genVar(sexp) {
   return snippet(js);
 }
 var builtins = {
+  "break": genKeywordStatement,
+  "continue": genKeywordStatement,
+  "return": genKeywordStatement,
+  "throw": genKeywordStatement,
   "if": genIf,
   "for": genFor,
   "function": genFunction,
-  "return": genReturn,
   "var": genVar
 };
 var binops = ["+", "-", "*", "/", "=", "==", "!=", "<", ">", "<=", ">=", "&&", "||", "in"];
