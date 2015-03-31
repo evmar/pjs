@@ -107,7 +107,8 @@ function genFunction(sexp) {
   var jsargs = args.map(function(arg) {
     return arg.sym();
   }).join(",");
-  var js = "function " + name + "(" + jsargs + ") {";
+  var js = "function " + name + "(" + jsargs + ") {" + genStmts(body) + "}";
+  return snippet(js, "lit");
 }
 
 function genIf(sexp) {
@@ -136,6 +137,7 @@ function genVar(sexp) {
 }
 var builtins = {
   "if": genIf,
+  "function": genFunction,
   "var": genVar
 };
 var binops = ["+", "-", "*", "/", "=", "==", "!=", "<", ">", "<=", ">=", "&&", "||", "in"];

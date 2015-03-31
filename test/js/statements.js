@@ -15,3 +15,8 @@ if (a) {
 }
 var a;
 var a = 3 + 4;
+
+function foo(bar, baz) {
+  1;
+  2;
+}
