@@ -16,6 +16,10 @@ if (a) {
 var a;
 var a = 3 + 4;
 
+function(x) {
+  1 + x;
+}
+
 function foo(bar, baz) {
   1;
   2;
