@@ -28,3 +28,6 @@ function foo(bar, baz) {
 function foo(bar, baz) {
   return x + 1;
 }
+for (var i = 0; i < 4; ++i) {
+  return i;
+}

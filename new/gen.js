@@ -94,6 +94,14 @@ function genUnOp(sexp) {
   return snippet(js, op);
 }
 
+function genFor(sexp) {
+  var init = jsStmt(sexp[1], "none");
+  var test = jsExpr(sexp[2], "none");
+  var iter = jsExpr(sexp[3], "none");
+  var body = genStmts(sexp.slice(4));
+  return snippet("for (" + init + " " + test + "; " + iter + ") {" + body + "}");
+}
+
 function genFunction(sexp) {
   if (symlib.isSymbol(sexp[1])) {
     var name = sexp[1].sym();
@@ -141,6 +149,7 @@ function genVar(sexp) {
 }
 var builtins = {
   "if": genIf,
+  "for": genFor,
   "function": genFunction,
   "return": genReturn,
   "var": genVar
@@ -162,7 +171,7 @@ function genForm(sexp) {
     return builtins[op](sexp);
   }
   if (!false) {
-    throw new Error("unimplemented");
+    throw new Error("unimplemented:" + op);
   }
 }
 
