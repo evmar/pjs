@@ -24,3 +24,7 @@ function foo(bar, baz) {
   1;
   2;
 }
+
+function foo(bar, baz) {
+  return x + 1;
+}

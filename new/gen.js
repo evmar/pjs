@@ -125,6 +125,10 @@ function genIf(sexp) {
   return snippet(js);
 }
 
+function genReturn(sexp) {
+  return snippet("return " + jsExpr(sexp[1], "none") + ";");
+}
+
 function genVar(sexp) {
   var name = sexp[1].sym();
   var js = "var " + name;
@@ -138,6 +142,7 @@ function genVar(sexp) {
 var builtins = {
   "if": genIf,
   "function": genFunction,
+  "return": genReturn,
   "var": genVar
 };
 var binops = ["+", "-", "*", "/", "=", "==", "!=", "<", ">", "<=", ">=", "&&", "||", "in"];
