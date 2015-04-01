@@ -21,3 +21,6 @@
 (throw "foo")
 (break)
 (continue)
+
+(var x (new y))
+;;(new y z)

@@ -141,6 +141,13 @@ function genIf(sexp) {
   return snippet(js);
 }
 
+function genNew(sexp) {
+  if (sexp.length > 2) {
+    return genNew([sexp[0], sexp.slice(1)]);
+  }
+  return snippet("new " + jsExpr(sexp[1], "new"), "new");
+}
+
 function genVar(sexp) {
   var name = sexp[1].sym();
   var js = "var " + name;
@@ -159,6 +166,7 @@ var builtins = {
   "if": genIf,
   "for": genFor,
   "function": genFunction,
+  "new": genNew,
   "var": genVar
 };
 var binops = ["+", "-", "*", "/", "=", "==", "!=", "<", ">", "<=", ">=", "&&", "||", "in"];

@@ -34,3 +34,4 @@ for (var i = 0; i < 4; ++i) {
 throw "foo";
 break;
 continue;
+var x = new y;
