@@ -180,14 +180,20 @@ for (var __pjs_1 = 0; __pjs_1 < unops.length; ++__pjs_1) {
   builtins[op] = genUnOp;
 }
 
+function genAsArgs(args) {
+  return args.map(function(e) {
+    return jsExpr(e, ",");
+  }).join(", ");
+}
+
 function genForm(sexp) {
   var op = sexp[0].sym();
   if (op in builtins) {
     return builtins[op](sexp);
   }
-  if (!false) {
-    throw new Error("unimplemented:" + op);
-  }
+  var func = jsExpr(sexp[0], "call");
+  var args = genAsArgs(sexp.slice(1));
+  return snippet(func + "(" + args + ")", "call");
 }
 
 function gen(sexp) {

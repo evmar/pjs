@@ -23,4 +23,4 @@
 (continue)
 
 (var x (new y))
-;;(new y z)
+(new y z)
