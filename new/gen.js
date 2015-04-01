@@ -162,6 +162,30 @@ function genNew(sexp) {
   return snippet("new " + jsExpr(sexp[1], "new"), "new");
 }
 
+function genObj(sexp) {
+  var js = "{";
+  for (var i = 1; i < sexp.length; i += 2) {
+    var key = sexp[i];
+    var val = sexp[i + 1];
+    if (symlib.isSymbol(key)) {
+      key = key.sym();
+    } else {
+      if (typeof(key) == "string") {
+        key = stringQuote(key);
+      } else {
+        throw new Error("cannot make obj literal with " + key);
+      }
+    }
+    val = jsExpr(val, "none");
+    if (i > 1) {
+      js += ", ";
+    }
+    js += key + ":" + val;
+  }
+  js += "}";
+  return snippet(js, "lit");
+}
+
 function genVar(sexp) {
   var name = sexp[1].sym();
   var js = "var " + name;
@@ -184,6 +208,7 @@ var builtins = {
   "function": genFunction,
   "list": genList,
   "new": genNew,
+  "obj": genObj,
   "var": genVar
 };
 var binops = ["+", "-", "*", "/", "=", "==", "!=", "<", ">", "<=", ">=", "&&", "||", "in"];

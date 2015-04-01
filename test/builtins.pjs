@@ -31,3 +31,5 @@
   (do y z))
 
 (list 1 2 (+ 3 4))
+
+(var x (obj "foo" bar x y))
