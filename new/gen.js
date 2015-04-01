@@ -143,12 +143,16 @@ function genIf(sexp) {
   }
   var cond = jsExpr(sexp[1], "none");
   var body = jsStmt(sexp[2]);
-  var js = "if (" + cond + ") {" + body + "}";
+  var js = "if (" + cond + ") {" + body + "}\n";
   if (sexp.length == 4) {
     var elsebody = jsStmt(sexp[3]);
-    js += " else {" + elsebody + "}";
+    js += " else {" + elsebody + "}\n";
   }
   return snippet(js);
+}
+
+function genList(sexp) {
+  return snippet("[" + genAsArgs(sexp.slice(1)) + "]", "lit");
 }
 
 function genNew(sexp) {
@@ -178,6 +182,7 @@ var builtins = {
   "if": genIf,
   "for": genFor,
   "function": genFunction,
+  "list": genList,
   "new": genNew,
   "var": genVar
 };
