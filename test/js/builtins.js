@@ -37,3 +37,7 @@ continue;
 var x = new y;
 new y(z);
 x[1 + 2];
+if (x) {
+  y;
+  z;
+}

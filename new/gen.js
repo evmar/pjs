@@ -108,6 +108,10 @@ function genAt(sexp) {
   return snippet(obj + "[" + index + "]", "[]");
 }
 
+function genDo(sexp) {
+  return snippet(genStmts(sexp.slice(1)));
+}
+
 function genFor(sexp) {
   var init = jsStmt(sexp[1], "none");
   var test = jsExpr(sexp[2], "none");
@@ -170,6 +174,7 @@ var builtins = {
   "return": genKeywordStatement,
   "throw": genKeywordStatement,
   "at": genAt,
+  "do": genDo,
   "if": genIf,
   "for": genFor,
   "function": genFunction,
