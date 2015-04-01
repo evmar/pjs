@@ -2,27 +2,28 @@
 all: lib test out.js
 
 ifeq ($(NEW),)
-PJS=stable/pjs.js
+PJS := stable/pjs.js
 else
-PJS=new/pjs.js
+PJS := new/pjs.js
 endif
-$(info Building using $(PJS))
+PJSCMD := $(PJS) $(FLAGS)
+$(info Building using "$(PJSCMD)")
 
-libs=sexp util macro quasi symbol gen
+libs := sexp util macro quasi symbol gen
 lib: $(foreach lib,$(libs),new/$(lib).js)
 new/%.js: lib/%.pjs $(PJS) lib/*
-	node $(PJS) $< $@
+	node $(PJSCMD) $< $@
 
 diff:
 	diff -ur stable/ new/
 update:
 	cp new/* stable
 
-tests=stmt-expr quasi map prec ops literals statements
+tests := stmt-expr quasi map prec ops literals statements
 test: $(foreach test,$(tests),test/js/$(test).js)
 test/js/%.js: test/%.pjs $(PJS) lib/*
-	node $(PJS) $(TESTFLAGS) $< $@
+	node $(PJSCMD) $< $@
 
 #node $(PJS) -u -n $< $@ && cat $@
 out.js: out.pjs $(PJS) lib/* Makefile
-	node $(PJS) $< $@ && cat $@
+	node $(PJSCMD) $< $@ && cat $@
