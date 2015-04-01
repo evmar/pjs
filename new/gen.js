@@ -102,6 +102,12 @@ function genKeywordStatement(sexp) {
   return snippet(sexp[0].sym() + body + ";");
 }
 
+function genAt(sexp) {
+  var obj = jsExpr(sexp[1], "[]");
+  var index = jsExpr(sexp[2], "none");
+  return snippet(obj + "[" + index + "]", "[]");
+}
+
 function genFor(sexp) {
   var init = jsStmt(sexp[1], "none");
   var test = jsExpr(sexp[2], "none");
@@ -163,6 +169,7 @@ var builtins = {
   "continue": genKeywordStatement,
   "return": genKeywordStatement,
   "throw": genKeywordStatement,
+  "at": genAt,
   "if": genIf,
   "for": genFor,
   "function": genFunction,

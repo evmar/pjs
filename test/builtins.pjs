@@ -24,3 +24,5 @@
 
 (var x (new y))
 (new y z)
+
+(at x (+ 1 2))
