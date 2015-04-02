@@ -94,6 +94,32 @@ function genUnOp(sexp) {
   return snippet(js, op);
 }
 
+function genKeywordStatement(sexp) {
+  var body = "";
+  if (sexp[1]) {
+    body = " " + jsExpr(sexp[1], "none");
+  }
+  return snippet(sexp[0].sym() + body + ";");
+}
+
+function genAt(sexp) {
+  var obj = jsExpr(sexp[1], "[]");
+  var index = jsExpr(sexp[2], "none");
+  return snippet(obj + "[" + index + "]", "[]");
+}
+
+function genDo(sexp) {
+  return snippet(genStmts(sexp.slice(1)));
+}
+
+function genFor(sexp) {
+  var init = jsStmt(sexp[1], "none");
+  var test = jsExpr(sexp[2], "none");
+  var iter = jsExpr(sexp[3], "none");
+  var body = genStmts(sexp.slice(4));
+  return snippet("for (" + init + " " + test + "; " + iter + ") {" + body + "}");
+}
+
 function genFunction(sexp) {
   if (symlib.isSymbol(sexp[1])) {
     var name = sexp[1].sym();
@@ -107,7 +133,8 @@ function genFunction(sexp) {
   var jsargs = args.map(function(arg) {
     return arg.sym();
   }).join(",");
-  var js = "function " + name + "(" + jsargs + ") {";
+  var js = "function " + name + "(" + jsargs + ") {" + genStmts(body) + "}";
+  return snippet(js, "lit");
 }
 
 function genIf(sexp) {
@@ -116,12 +143,47 @@ function genIf(sexp) {
   }
   var cond = jsExpr(sexp[1], "none");
   var body = jsStmt(sexp[2]);
-  var js = "if (" + cond + ") {" + body + "}";
+  var js = "if (" + cond + ") {" + body + "}\n";
   if (sexp.length == 4) {
     var elsebody = jsStmt(sexp[3]);
-    js += " else {" + elsebody + "}";
+    js += " else {" + elsebody + "}\n";
   }
   return snippet(js);
+}
+
+function genList(sexp) {
+  return snippet("[" + genAsArgs(sexp.slice(1)) + "]", "lit");
+}
+
+function genNew(sexp) {
+  if (sexp.length > 2) {
+    return genNew([sexp[0], sexp.slice(1)]);
+  }
+  return snippet("new " + jsExpr(sexp[1], "new"), "new");
+}
+
+function genObj(sexp) {
+  var js = "{";
+  for (var i = 1; i < sexp.length; i += 2) {
+    var key = sexp[i];
+    var val = sexp[i + 1];
+    if (symlib.isSymbol(key)) {
+      key = key.sym();
+    } else {
+      if (typeof(key) == "string") {
+        key = stringQuote(key);
+      } else {
+        throw new Error("cannot make obj literal with " + key);
+      }
+    }
+    val = jsExpr(val, "none");
+    if (i > 1) {
+      js += ", ";
+    }
+    js += key + ":" + val;
+  }
+  js += "}";
+  return snippet(js, "lit");
 }
 
 function genVar(sexp) {
@@ -135,7 +197,18 @@ function genVar(sexp) {
   return snippet(js);
 }
 var builtins = {
+  "break": genKeywordStatement,
+  "continue": genKeywordStatement,
+  "return": genKeywordStatement,
+  "throw": genKeywordStatement,
+  "at": genAt,
+  "do": genDo,
   "if": genIf,
+  "for": genFor,
+  "function": genFunction,
+  "list": genList,
+  "new": genNew,
+  "obj": genObj,
   "var": genVar
 };
 var binops = ["+", "-", "*", "/", "=", "==", "!=", "<", ">", "<=", ">=", "&&", "||", "in"];
@@ -149,14 +222,20 @@ for (var __pjs_1 = 0; __pjs_1 < unops.length; ++__pjs_1) {
   builtins[op] = genUnOp;
 }
 
+function genAsArgs(args) {
+  return args.map(function(e) {
+    return jsExpr(e, ",");
+  }).join(", ");
+}
+
 function genForm(sexp) {
   var op = sexp[0].sym();
   if (op in builtins) {
     return builtins[op](sexp);
   }
-  if (!false) {
-    throw new Error("unimplemented");
-  }
+  var func = jsExpr(sexp[0], "call");
+  var args = genAsArgs(sexp.slice(1));
+  return snippet(func + "(" + args + ")", "call");
 }
 
 function gen(sexp) {
