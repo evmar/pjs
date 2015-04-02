@@ -17,16 +17,16 @@
   (var x 3)
   (var x (if 1 2 3)))
 
-(function nestedIf ()
-  (return (if 1 2 3)))
+;; (function nestedIf ()
+;;   (return (if 1 2 3)))
 
-(function doubleIf ()
-  (if (if 1 2 3) 4))
+;; (function doubleIf ()
+;;   (if (if 1 2 3) 4))
 
-(function switches ()
-  (switch (x)
-    (1 2)
-    (3 4))
+;; (function switches ()
+;;   (switch (x)
+;;     (1 2)
+;;     (3 4))
 
-  (var x (switch y (1 2)))
-  (switch z (1 (return 3))))
+;;   (var x (switch y (1 2)))
+;;   (switch z (1 (return 3))))
