@@ -30,7 +30,7 @@ function trans(stmts, outVar) {
   var blocks = [];
   for (var i = 0; i < stmts.length; ++i) {
     if (i == stmts.length - 1) {
-      blocks.push(transSexp(stmts[i]), outVar);
+      blocks.push(transSexp(stmts[i], outVar));
     } else {
       blocks.push(transSexp(stmts[i]));
     }

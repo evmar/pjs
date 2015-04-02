@@ -376,8 +376,10 @@ var p = sexpp.parse(data);
 if (args.n) {
   var gen = require('./gen');
   var stmtexp = require('./stmt-expr');
+  var toStr = require('./sexp-print').toStr;
+  console.log('input', toStr(p));
   p = stmtexp.trans(p);
-  console.log('trans', p);
+  console.log('trans', toStr(p));
   js = gen.genStmts(p);
 } else {
   var js = genStmts(p);
