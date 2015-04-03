@@ -102,6 +102,12 @@ function genKeywordStatement(sexp) {
   return snippet(sexp[0].sym() + body + ";");
 }
 
+function genCall(sexp) {
+  var func = jsExpr(sexp[0], "call");
+  var args = genAsArgs(sexp.slice(1));
+  return snippet(func + "(" + args + ")", "call");
+}
+
 function genAt(sexp) {
   var obj = jsExpr(sexp[1], "[]");
   var index = jsExpr(sexp[2], "none");
@@ -233,9 +239,7 @@ function genForm(sexp) {
   if (op in builtins) {
     return builtins[op](sexp);
   }
-  var func = jsExpr(sexp[0], "call");
-  var args = genAsArgs(sexp.slice(1));
-  return snippet(func + "(" + args + ")", "call");
+  return genCall(sexp);
 }
 
 function gen(sexp) {
