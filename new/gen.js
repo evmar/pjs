@@ -54,6 +54,9 @@ function jsStmt(sexp, outVar) {
 }
 
 function jsExpr(sexp, prec) {
+  if (prec == "none" && sexp.length == 0) {
+    return "";
+  }
   var g = gen(sexp);
   if (!g.prec) {
     throw new Error("in " + sexp + " stmt here not supported, had code " + g.code);

@@ -31,6 +31,8 @@ function foo(bar, baz) {
 for (var i = 0; i < 4; ++i) {
   return i;
 }
+for (;;) {;
+}
 throw "foo";
 break;
 continue;
