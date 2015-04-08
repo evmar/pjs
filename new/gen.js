@@ -235,6 +235,9 @@ function genSwitch(sexp, outVar) {
     js += "case " + jsExpr(scase[0], "none") + ":\n";
     if (js.length > 1) {
       js += genStmts(scase.slice(1), outVar);
+      if (outVar && outVar != "return") {
+        js += "break;";
+      }
     }
   }
   js += "}";
