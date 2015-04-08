@@ -32,12 +32,18 @@ var precTable = {
 };
 exports.precTable = precTable;
 
-function jsStmt(sexp) {
-  var g = gen(sexp);
+function jsStmt(sexp, outVar) {
+  var g = gen(sexp, outVar);
   if (!g.prec) {
     return g.code;
   }
   var code = g.code;
+  if (outVar == "return") {
+    return "return " + code + ";";
+  }
+  if (outVar) {
+    return outVar + " = " + code + ";";
+  }
   if (!symlib.isSymbol(sexp[0], "function")) {
     code += ";";
   }
@@ -143,15 +149,15 @@ function genFunction(sexp) {
   return snippet(js, "lit");
 }
 
-function genIf(sexp) {
+function genIf(sexp, outVar) {
   if (sexp.length < 3 || sexp.length > 4) {
     throw new Error("bad args to 'if'");
   }
   var cond = jsExpr(sexp[1], "none");
-  var body = jsStmt(sexp[2]);
+  var body = jsStmt(sexp[2], outVar);
   var js = "if (" + cond + ") {" + body + "}\n";
   if (sexp.length == 4) {
-    var elsebody = jsStmt(sexp[3]);
+    var elsebody = jsStmt(sexp[3], outVar);
     js += " else {" + elsebody + "}\n";
   }
   return snippet(js);
@@ -192,20 +198,36 @@ function genObj(sexp) {
   return snippet(js, "lit");
 }
 
-function genVar(sexp) {
+function genReturn(sexp, outVar) {
+  var body = gen(sexp[1], "return");
+  if (body.prec) {
+    return snippet("return " + body.code + ";");
+  } else {
+    return body;
+  }
+}
+
+function genVar(sexp, outVar) {
+  if (!!outVar) {
+    throw new Error("can't use var as expr");
+  }
   var name = sexp[1].sym();
   var js = "var " + name;
   if (sexp.length > 2) {
-    var val = jsExpr(sexp[2], "none");
-    js += " = " + val;
+    var body = gen(sexp[2], name);
+    if (body.prec) {
+      js += " = " + body.code + ";\n";
+    } else {
+      js += ";\n" + body.code;
+    }
+  } else {
+    js += ";";
   }
-  js += ";";
   return snippet(js);
 }
 var builtins = {
   "break": genKeywordStatement,
   "continue": genKeywordStatement,
-  "return": genKeywordStatement,
   "throw": genKeywordStatement,
   "at": genAt,
   "do": genDo,
@@ -215,6 +237,7 @@ var builtins = {
   "list": genList,
   "new": genNew,
   "obj": genObj,
+  "return": genReturn,
   "var": genVar
 };
 var binops = ["+", "-", "*", "/", "=", "==", "!=", "<", ">", "<=", ">=", "&&", "||", "in"];
@@ -234,15 +257,15 @@ function genAsArgs(args) {
   }).join(", ");
 }
 
-function genForm(sexp) {
+function genForm(sexp, outVar) {
   var op = sexp[0].sym();
   if (op in builtins) {
-    return builtins[op](sexp);
+    return builtins[op](sexp, outVar);
   }
-  return genCall(sexp);
+  return genCall(sexp, outVar);
 }
 
-function gen(sexp) {
+function gen(sexp, outVar) {
   switch (typeof(sexp)) {
     case "undefined":
       throw new Error("undefined sexp");
@@ -254,7 +277,7 @@ function gen(sexp) {
       if (pjs.isSymbol(sexp)) {
         return snippet(sexp.sym(), "lit");
       } else {
-        return genForm(sexp);
+        return genForm(sexp, outVar);
       }
   }
 }

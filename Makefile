@@ -9,7 +9,7 @@ endif
 PJSCMD := $(PJS) $(FLAGS)
 $(info Building using "$(PJSCMD)")
 
-libs := sexp util macro quasi symbol gen stmt-expr sexp-print
+libs := sexp util macro quasi symbol gen sexp-print
 lib: $(foreach lib,$(libs),new/$(lib).js)
 new/%.js: lib/%.pjs $(PJS) lib/*
 	node $(PJSCMD) $< $@
