@@ -239,6 +239,14 @@ function genVar(sexp, outVar) {
   }
   return snippet(js);
 }
+
+function genWhile(sexp, outVar) {
+  if (!!outVar) {
+    throw new Error("can't use while as expr");
+  }
+  var cond = jsExpr(sexp[1], "none");
+  return snippet("while (" + cond + ") {\n" + genStmts(sexp.slice(2)) + "}");
+}
 var builtins = {
   "break": genKeywordStatement,
   "continue": genKeywordStatement,
@@ -253,7 +261,8 @@ var builtins = {
   "obj": genObj,
   "return": genReturn,
   "switch": genSwitch,
-  "var": genVar
+  "var": genVar,
+  "while": genWhile
 };
 var binops = ["+", "-", "*", "/", "=", "==", "!=", "<", ">", "<=", ">=", "&&", "||", "in"];
 for (var __pjs_1 = 0; __pjs_1 < binops.length; ++__pjs_1) {

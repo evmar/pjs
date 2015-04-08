@@ -54,3 +54,7 @@ switch (x) {
     4;
     break;
 }
+while (x) {
+  y;
+  z;
+}
