@@ -17,8 +17,8 @@
   (var x 3)
   (var x (if 1 2 3)))
 
-;; (function nestedIf ()
-;;   (return (if 1 2 3)))
+(function nestedIf ()
+  (return (if 1 2 3)))
 
 ;; (function doubleIf ()
 ;;   (if (if 1 2 3) 4))
