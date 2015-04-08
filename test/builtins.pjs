@@ -61,3 +61,8 @@
 (while x y z)
 
 (while x ())
+
+;; (. foo)
+(. foo bar)
+;; (. foo bar baz)
+;; ((. foo bar) baz)

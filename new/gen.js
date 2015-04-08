@@ -120,6 +120,17 @@ function genCall(sexp) {
   return snippet(func + "(" + args + ")", "call");
 }
 
+function genDot(sexp) {
+  if (sexp.length > 3) {
+    var args = sexp.slice(3);
+  } else {
+    sexp = sexp.slice(0, 3);
+  }
+  var obj = jsExpr(sexp[1], ".");
+  var attr = sexp[2].sym();
+  return snippet(obj + "." + attr, ".");
+}
+
 function genAt(sexp) {
   var obj = jsExpr(sexp[1], "[]");
   var index = jsExpr(sexp[2], "none");
@@ -257,6 +268,7 @@ var builtins = {
   "break": genKeywordStatement,
   "continue": genKeywordStatement,
   "throw": genKeywordStatement,
+  ".": genDot,
   "at": genAt,
   "do": genDo,
   "if": genIf,
