@@ -36,7 +36,7 @@ for (;;) {;
 throw "foo";
 break;
 continue;
-var x = new y;
+var x = new y(3);
 new y(z);
 x[1 + 2];
 if (x) {

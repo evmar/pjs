@@ -38,7 +38,10 @@
 (break)
 (continue)
 
-(var x (new y))
+;; TODO:
+;; (var x (new y))
+;; (var x (new y ()))
+(var x (new y 3))
 (new y z)
 
 (at x (+ 1 2))
