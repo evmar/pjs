@@ -24,9 +24,9 @@
 ;;   (if (if 1 2 3) 4))
 
 ;; (function switches ()
-;;   (switch (x)
+;;   (switch x
 ;;     (1 2)
-;;     (3 4))
+;;     (3 4)))
 
 ;;   (var x (switch y (1 2)))
 ;;   (switch z (1 (return 3))))

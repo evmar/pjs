@@ -34,7 +34,7 @@ for (var i = 0; i < 4; ++i) {
 throw "foo";
 break;
 continue;
-var x = new y();
+var x = new y;
 new y(z);
 x[1 + 2];
 if (x) {
@@ -46,3 +46,11 @@ var x = {
   "foo": bar,
   x: y
 };
+switch (x) {
+  case 0:
+  case 1:
+    2;
+  case 3:
+    4;
+    break;
+}

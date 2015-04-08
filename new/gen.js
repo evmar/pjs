@@ -207,6 +207,20 @@ function genReturn(sexp, outVar) {
   }
 }
 
+function genSwitch(sexp, outVar) {
+  var cond = jsExpr(sexp[1], "none");
+  var js = "switch (" + cond + ") {\n";
+  for (var i = 2; i < sexp.length; ++i) {
+    var scase = sexp[i];
+    js += "case " + jsExpr(scase[0], "none") + ":\n";
+    if (js.length > 1) {
+      js += genStmts(scase.slice(1), outVar);
+    }
+  }
+  js += "}";
+  return snippet(js);
+}
+
 function genVar(sexp, outVar) {
   if (!!outVar) {
     throw new Error("can't use var as expr");
@@ -238,6 +252,7 @@ var builtins = {
   "new": genNew,
   "obj": genObj,
   "return": genReturn,
+  "switch": genSwitch,
   "var": genVar
 };
 var binops = ["+", "-", "*", "/", "=", "==", "!=", "<", ">", "<=", ">=", "&&", "||", "in"];
