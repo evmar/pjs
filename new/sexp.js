@@ -16,6 +16,8 @@ function Reader(str) {
   this.ofs = 0;
 }
 Reader.prototype.read = function() {
+  var lineStart = 0;
+  var line = 1;
   while (this.ofs < this.str.length) {
     var c = this.str[this.ofs];
     ++this.ofs;
@@ -23,6 +25,8 @@ Reader.prototype.read = function() {
       case " ":
         continue;
       case "\n":
+        ++line;
+        lineStart = this.ofs + 1;
         continue;
       case ";":
         for (; this.ofs < this.str.length; ++this.ofs) {
@@ -33,6 +37,8 @@ Reader.prototype.read = function() {
         continue;
       case "(":
         var sexp = [];
+        sexp.line = line;
+        sexp.col = this.ofs - lineStart;
         for (var s;
           (s = this.read()) != null;) {
           sexp.push(s);
