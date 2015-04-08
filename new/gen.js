@@ -125,7 +125,7 @@ function genDo(sexp) {
 }
 
 function genFor(sexp) {
-  var init = jsStmt(sexp[1], "none");
+  var init = jsStmt(sexp[1]);
   var test = jsExpr(sexp[2], "none");
   var iter = jsExpr(sexp[3], "none");
   var body = genStmts(sexp.slice(4));
