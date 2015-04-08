@@ -56,7 +56,8 @@
 (switch x
   (0)
   (1 2)
-  (3 4 (break)))
+  (3 4 (break))
+  (default 5))
 
 (while x y z)
 

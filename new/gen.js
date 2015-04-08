@@ -232,7 +232,11 @@ function genSwitch(sexp, outVar) {
   var js = "switch (" + cond + ") {\n";
   for (var i = 2; i < sexp.length; ++i) {
     var scase = sexp[i];
-    js += "case " + jsExpr(scase[0], "none") + ":\n";
+    if (symlib.isSymbol(scase[0], "default")) {
+      js += "default:\n";
+    } else {
+      js += "case " + jsExpr(scase[0], "none") + ":\n";
+    }
     if (js.length > 1) {
       js += genStmts(scase.slice(1), outVar);
       if (outVar && outVar != "return") {

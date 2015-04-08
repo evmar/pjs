@@ -55,6 +55,8 @@ switch (x) {
   case 3:
     4;
     break;
+  default:
+    5;
 }
 while (x) {
   y;
