@@ -297,11 +297,11 @@ function gen(sexp, outVar) {
   }
 }
 
-function genStmts(sexps) {
+function genStmts(sexps, outVar) {
   var js = "";
   for (var __pjs_1 = 0; __pjs_1 < sexps.length; ++__pjs_1) {
     var sexp = sexps[__pjs_1];
-    js += jsStmt(sexp);
+    js += jsStmt(sexp, outVar);
   }
   return js;
 }

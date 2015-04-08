@@ -16,3 +16,12 @@ function nestedIf() {
     return 3;
   }
 }
+
+function switches() {
+  switch (x) {
+    case 1:
+      return 2;
+    case 3:
+      return 4;
+  }
+}
