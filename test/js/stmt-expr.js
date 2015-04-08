@@ -25,3 +25,12 @@ function switches() {
       return 4;
   }
 }
+var x;
+switch (y) {
+  case 1:
+    x = 2;
+}
+switch (z) {
+  case 1:
+    return 3;
+}
