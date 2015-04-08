@@ -32,6 +32,10 @@ var precTable = {
 };
 exports.precTable = precTable;
 
+function showError(sexp, text) {
+  return "at " + sexp.line + ":" + sexp.col + ": " + sexp + text;
+}
+
 function jsStmt(sexp, outVar) {
   if (sexp.length == 0) {
     return ";";
@@ -59,7 +63,7 @@ function jsExpr(sexp, prec) {
   }
   var g = gen(sexp);
   if (!g.prec) {
-    throw new Error("in " + sexp + " stmt here not supported, had code " + g.code);
+    throw new Error(showError(sexp, "stmt here not supported, had code " + g.code));
   }
   if (!(prec in precTable)) {
     throw new Error("unknown prec " + prec);
