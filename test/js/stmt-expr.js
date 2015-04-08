@@ -29,6 +29,7 @@ var x;
 switch (y) {
   case 1:
     x = 2;
+    break;
 }
 switch (z) {
   case 1:

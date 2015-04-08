@@ -63,3 +63,5 @@ while (x) {
 while (x) {;
 }
 foo.bar;
+foo.bar(baz);
+foo.bar(baz);

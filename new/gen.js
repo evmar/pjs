@@ -120,11 +120,14 @@ function genCall(sexp) {
   return snippet(func + "(" + args + ")", "call");
 }
 
-function genDot(sexp) {
+function genDot(sexp, outVar) {
   if (sexp.length > 3) {
     var args = sexp.slice(3);
-  } else {
     sexp = sexp.slice(0, 3);
+    if (args.length == 1 && args[0].length == 0) {
+      args = [];
+    }
+    return gen([sexp].concat(args), outVar);
   }
   var obj = jsExpr(sexp[1], ".");
   var attr = sexp[2].sym();
@@ -300,9 +303,11 @@ function genAsArgs(args) {
 }
 
 function genForm(sexp, outVar) {
-  var op = sexp[0].sym();
-  if (op in builtins) {
-    return builtins[op](sexp, outVar);
+  if (symlib.isSymbol(sexp[0])) {
+    var op = sexp[0].sym();
+    if (op in builtins) {
+      return builtins[op](sexp, outVar);
+    }
   }
   return genCall(sexp, outVar);
 }
