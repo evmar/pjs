@@ -12,29 +12,4 @@
 ;; See the License for the specific language governing permissions and
 ;; limitations under the License.
 
-3
 (+ 3 4)
-
-`1
-,2
-`(1 2 3)
-
-`(1 2 ,@(list 3 4) 5 6)
-(var x (list 3 4))
-`(1 2 ,@x 5)
-
-`"hello"
-
-(foo :bar baz)
-
-`(1 2 3)
-
-(obj foo bar)
-
-(forEach x foo
-  (console.log x))
-
-(function foo ()
-  3)
-
-(assert (== x 3) "x must be 3")
