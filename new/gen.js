@@ -183,9 +183,11 @@ function genFunction(sexp) {
   var jsargs = args.map(function(arg) {
     return arg.sym();
   }).join(",");
-  var varargjs = "";
+  var varargjs;
   if (vararg) {
     varargjs = jsStmt([pjs.sym("var"), vararg, [pjs.sym("Array.prototype.slice.call"), pjs.sym("arguments"), i]]);
+  } else {
+    varargjs = "";
   }
   var js = "function " + name + "(" + jsargs + ") {" + varargjs + genStmts(body) + "}";
   return snippet(js, "lit");
