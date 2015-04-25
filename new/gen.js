@@ -303,7 +303,7 @@ var builtins = {
   "var": genVar,
   "while": genWhile
 };
-var binops = ["+", "-", "*", "/", "=", "==", "!=", "<", ">", "<=", ">=", "&&", "||", "+=", "-=", "*=", "/=", "in"];
+var binops = ["+", "-", "*", "/", "=", "==", "!=", "<", ">", "<=", ">=", "&&", "||", "+=", "-=", "*=", "/=", "in", "instanceof"];
 for (var __pjs_1 = 0; __pjs_1 < binops.length; ++__pjs_1) {
   var op = binops[__pjs_1];
   builtins[op] = genBinOp;

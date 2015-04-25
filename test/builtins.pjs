@@ -67,3 +67,5 @@
 (. foo bar)
 (. foo bar baz)
 ((. foo bar) baz)
+
+(instanceof x y)

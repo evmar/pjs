@@ -67,3 +67,4 @@ while (x) {;
 foo.bar;
 foo.bar(baz);
 foo.bar(baz);
+x instanceof y;
