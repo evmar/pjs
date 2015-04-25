@@ -28,6 +28,11 @@ function foo(bar, baz) {
 function foo(bar, baz) {
   return x + 1;
 }
+
+function foo(bar, baz) {
+  var extra = Array.prototype.slice.call(arguments, 2);
+  return extra;
+}
 for (var i = 0; i < 4; ++i) {
   return i;
 }

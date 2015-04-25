@@ -172,10 +172,22 @@ function genFunction(sexp) {
     var args = sexp[1];
     var body = sexp.slice(2);
   }
+  var vararg = null;
+  for (var i = 0; i < args.length; ++i) {
+    if (symlib.isSymbol(args[i], ".")) {
+      vararg = args[i + 1];
+      args = args.slice(0, i);
+      break;
+    }
+  }
   var jsargs = args.map(function(arg) {
     return arg.sym();
   }).join(",");
-  var js = "function " + name + "(" + jsargs + ") {" + genStmts(body) + "}";
+  var varargjs = "";
+  if (vararg) {
+    varargjs = jsStmt([pjs.sym("var"), vararg, [pjs.sym("Array.prototype.slice.call"), pjs.sym("arguments"), i]]);
+  }
+  var js = "function " + name + "(" + jsargs + ") {" + varargjs + genStmts(body) + "}";
   return snippet(js, "lit");
 }
 
