@@ -313,6 +313,7 @@ for (var __pjs_1 = 0; __pjs_1 < unops.length; ++__pjs_1) {
   var op = unops[__pjs_1];
   builtins[op] = genUnOp;
 }
+var macros = {};
 
 function genAsArgs(args) {
   return args.map(function(e) {
@@ -325,6 +326,9 @@ function genForm(sexp, outVar) {
     var op = sexp[0].sym();
     if (op in builtins) {
       return builtins[op](sexp, outVar);
+    }
+    if (op in macros) {
+      return macros[op](sexp);
     }
   }
   return genCall(sexp, outVar);
