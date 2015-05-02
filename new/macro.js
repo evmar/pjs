@@ -17,7 +17,7 @@ exports.caseSexp = caseSexp;
 
 function forEach(name, list) {
   var body = Array.prototype.slice.call(arguments, 2);
-  var i = pjs.sym(genSym());
+  var i = pjs.sym("__pjs_1");
   return [].concat.apply([], [
     [pjs.sym("for"), [pjs.sym("var"), i, 0],
       [pjs.sym("<"), i, [pjs.sym("."), list, pjs.sym("length")]],
