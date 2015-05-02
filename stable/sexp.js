@@ -14,6 +14,8 @@ function isNumber(atom) {
 function Reader(str) {
   this.str = str;
   this.ofs = 0;
+  this.lineOfs = 0;
+  this.line = 1;
 }
 Reader.prototype.read = function() {
   while (this.ofs < this.str.length) {
@@ -23,6 +25,8 @@ Reader.prototype.read = function() {
       case " ":
         continue;
       case "\n":
+        ++this.line;
+        this.lineOfs = this.ofs + 1;
         continue;
       case ";":
         for (; this.ofs < this.str.length; ++this.ofs) {
@@ -33,6 +37,8 @@ Reader.prototype.read = function() {
         continue;
       case "(":
         var sexp = [];
+        sexp.line = this.line;
+        sexp.col = this.ofs - this.lineOfs;
         for (var s;
           (s = this.read()) != null;) {
           sexp.push(s);
