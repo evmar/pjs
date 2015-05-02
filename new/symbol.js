@@ -12,10 +12,5 @@ function isSymbol(obj, match) {
 function sym(name) {
   return Symbol.for(name);
 }
-
-function keyFor(sym) {
-  return Symbol.keyFor(sym);
-}
 exports.isSymbol = isSymbol;
 exports.sym = sym;
-exports.keyFor = keyFor;

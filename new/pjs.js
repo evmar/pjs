@@ -57,7 +57,7 @@ function evalStmts(code) {
 }
 
 function genMacro(sexp, outVar) {
-  var name = symlib.keyFor(sexp[0]);
+  var name = Symbol.keyFor(sexp[0]);
   var args = sexp.slice(1);
   var macro = macros[name];
 
@@ -140,7 +140,7 @@ function gen2(sexp, outVar) {
     return mkExpr(sexp, 'lit');
   }
   if (symlib.isSymbol(sexp)) {
-    return mkExpr(symlib.keyFor(sexp), 'lit');
+    return mkExpr(Symbol.keyFor(sexp), 'lit');
   }
 
   if (sexp.length === 0) {
@@ -148,19 +148,19 @@ function gen2(sexp, outVar) {
   }
 
   if (symlib.isSymbol(sexp[0])) {
-    switch (symlib.keyFor(sexp[0])) {
+    switch (Symbol.keyFor(sexp[0])) {
     case '+': case '-': case '*': case '=': case '<': case '>': case '&&': case '!=': case '+=': case '==': case '>=': case 'in': case '||':
-      var op = symlib.keyFor(sexp[0]);
+      var op = Symbol.keyFor(sexp[0]);
       var exprs = sexp.slice(1).map(function(e) {
         return genAsExpr(e, op);
       });
       return mkExpr(exprs.join(' ' + op + ' '), op);
     case '++': case '--': case '!':
-      var op = symlib.keyFor(sexp[0]);
+      var op = Symbol.keyFor(sexp[0]);
       return mkExpr(op + genAsExpr(sexp[1], op), op);
     case '.':
       var obj = genAsExpr(sexp[1], '.');
-      var attr = symlib.keyFor(sexp[2]);
+      var attr = Symbol.keyFor(sexp[2]);
       var args = sexp.slice(3);
       if (args.length) {
         // (. foo bar a b) is shorthand for ((. foo bar) a b).
@@ -173,7 +173,7 @@ function gen2(sexp, outVar) {
       }
       return mkExpr(obj + '.' + attr, '.');
     case 'var':
-      var name = symlib.keyFor(sexp[1]);
+      var name = Symbol.keyFor(sexp[1]);
       var js = 'var ' + name;
       if (sexp.length > 2) {
         var val = sexp[2];
@@ -191,20 +191,20 @@ function gen2(sexp, outVar) {
       sexp = sexp.slice(1);
       var name = '';
       if (symlib.isSymbol(sexp[0])) {
-        name = symlib.keyFor(sexp[0]);
+        name = Symbol.keyFor(sexp[0]);
         sexp = sexp.slice(1);
       }
       var args = sexp[0];
       var vararg = null;
       for (var i = 0; i < args.length; i++) {
-        if (symlib.keyFor(args[i]) == '.') {
+        if (Symbol.keyFor(args[i]) == '.') {
           vararg = args[i+1];
           args = args.slice(0, i);
           break;
         }
       }
       var body = sexp.slice(1);
-      var js = 'function ' + name + '(' + args.map(function(arg) { return symlib.keyFor(arg) }).join(',') + ') {';
+      var js = 'function ' + name + '(' + args.map(function(arg) { return Symbol.keyFor(arg) }).join(',') + ') {';
       if (vararg) {
         js += genAsStmt([pjs.sym('var'), vararg, [pjs.sym('Array.prototype.slice.call'), pjs.sym('arguments'), i]], null);
       }
@@ -240,7 +240,7 @@ function gen2(sexp, outVar) {
       var js = 'switch (' + genAsExpr(sexp[1], 'none') + ') {';
       sexp.slice(2).forEach(function(scase) {
         var str = 'case ' + genAsExpr(scase[0], 'none') + ':\n';
-        if (symlib.isSymbol(scase[0]) && symlib.keyFor(scase[0]) == 'default') {
+        if (symlib.isSymbol(scase[0]) && Symbol.keyFor(scase[0]) == 'default') {
           str = 'default:\n';
         }
         js += str + genStmts(scase.slice(1), outVar);
@@ -264,7 +264,7 @@ function gen2(sexp, outVar) {
     case 'new':
       // TODO: rewrite as a macro arounc a single-arg form
       // e.g. (new x) is builtin, while (new x y z) is (new (x y z)).
-      return mkExpr('new ' + symlib.keyFor(sexp[1]) + '(' + genAsArgs(sexp.slice(2)) + ')', 'new');
+      return mkExpr('new ' + Symbol.keyFor(sexp[1]) + '(' + genAsArgs(sexp.slice(2)) + ')', 'new');
     case 'if':
       if (sexp.length < 3 || sexp.length > 4) {
         throw 'bad if';
@@ -310,7 +310,7 @@ function gen2(sexp, outVar) {
         }
         var key = sexp[i];
         if (pjs.isSymbol(key)) {
-          key = symlib.keyFor(key);
+          key = Symbol.keyFor(key);
         } else if (typeof key == 'string') {
           key = gen.stringQuote(key);
         } else {
@@ -322,8 +322,8 @@ function gen2(sexp, outVar) {
       js += '}';
       return mkExpr(js, 'obj');
     case '#macro':
-      var name = symlib.keyFor(sexp[1]);
-      var args = sexp[2].map(function(a) { return symlib.keyFor(a); });
+      var name = Symbol.keyFor(sexp[1]);
+      var args = sexp[2].map(function(a) { return Symbol.keyFor(a); });
       var body = sexp.slice(3);
 
       var jsBody = genStmts(body);
@@ -331,7 +331,7 @@ function gen2(sexp, outVar) {
       macros[name] = fn;
       return mkExpr('/* macro definition */', 'lit');
     default:
-      if (macros[symlib.keyFor(sexp[0])]) {
+      if (macros[Symbol.keyFor(sexp[0])]) {
         return genMacro(sexp, outVar);
       }
     }
