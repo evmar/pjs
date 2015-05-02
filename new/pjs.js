@@ -25,8 +25,10 @@ var gen = require('./gen');
 // Expose a global pjs object so it can be found by macro evals.
 global.pjs = {
   assoc: util.assoc,
-  sym: symlib.sym,
-  isSymbol: symlib.isSymbol,
+  sym: symlib.get,
+  isSymbol: symlib.isSym,
+  isSym: symlib.isSym,
+  symStr: symlib.str,
 };
 
 var genSym = {
@@ -57,7 +59,7 @@ function evalStmts(code) {
 }
 
 function genMacro(sexp, outVar) {
-  var name = sexp[0].sym();
+  var name = symlib.str(sexp[0]);
   var args = sexp.slice(1);
   var macro = macros[name];
 
@@ -81,7 +83,7 @@ function genAsStmt(sexp, outVar) {
         code = outVar + "=" + code + ";";
       }
     } else {
-      if (!symlib.isSymbol(sexp[0], 'function')) {
+      if (!symlib.isSym(sexp[0], 'function')) {
         code += ';';
       }
     }
@@ -139,28 +141,28 @@ function gen2(sexp, outVar) {
   if (typeof sexp === 'boolean') {
     return mkExpr(sexp, 'lit');
   }
-  if (symlib.isSymbol(sexp)) {
-    return mkExpr(sexp.sym(), 'lit');
+  if (symlib.isSym(sexp)) {
+    return mkExpr(symlib.str(sexp), 'lit');
   }
 
   if (sexp.length === 0) {
     return mkStmt(';');
   }
 
-  if (symlib.isSymbol(sexp[0])) {
-    switch (sexp[0].sym()) {
+  if (symlib.isSym(sexp[0])) {
+    switch (symlib.str(sexp[0])) {
     case '+': case '-': case '*': case '=': case '<': case '>': case '&&': case '!=': case '+=': case '==': case '>=': case 'in': case '||':
-      var op = sexp[0].sym();
+      var op = symlib.str(sexp[0]);
       var exprs = sexp.slice(1).map(function(e) {
         return genAsExpr(e, op);
       });
       return mkExpr(exprs.join(' ' + op + ' '), op);
     case '++': case '--': case '!':
-      var op = sexp[0].sym();
+      var op = symlib.str(sexp[0]);
       return mkExpr(op + genAsExpr(sexp[1], op), op);
     case '.':
       var obj = genAsExpr(sexp[1], '.');
-      var attr = sexp[2].sym();
+      var attr = symlib.str(sexp[2]);
       var args = sexp.slice(3);
       if (args.length) {
         // (. foo bar a b) is shorthand for ((. foo bar) a b).
@@ -173,7 +175,7 @@ function gen2(sexp, outVar) {
       }
       return mkExpr(obj + '.' + attr, '.');
     case 'var':
-      var name = sexp[1].sym();
+      var name = symlib.str(sexp[1]);
       var js = 'var ' + name;
       if (sexp.length > 2) {
         var val = sexp[2];
@@ -190,21 +192,21 @@ function gen2(sexp, outVar) {
     case 'function':
       sexp = sexp.slice(1);
       var name = '';
-      if (symlib.isSymbol(sexp[0])) {
-        name = sexp[0].sym();
+      if (symlib.isSym(sexp[0])) {
+        name = symlib.str(sexp[0]);
         sexp = sexp.slice(1);
       }
       var args = sexp[0];
       var vararg = null;
       for (var i = 0; i < args.length; i++) {
-        if (args[i].sym() == '.') {
+        if (symlib.str(args[i]) == '.') {
           vararg = args[i+1];
           args = args.slice(0, i);
           break;
         }
       }
       var body = sexp.slice(1);
-      var js = 'function ' + name + '(' + args.map(function(arg) { return arg.sym() }).join(',') + ') {';
+      var js = 'function ' + name + '(' + args.map(function(arg) { return symlib.str(arg) }).join(',') + ') {';
       if (vararg) {
         js += genAsStmt([pjs.sym('var'), vararg, [pjs.sym('Array.prototype.slice.call'), pjs.sym('arguments'), i]], null);
       }
@@ -240,7 +242,7 @@ function gen2(sexp, outVar) {
       var js = 'switch (' + genAsExpr(sexp[1], 'none') + ') {';
       sexp.slice(2).forEach(function(scase) {
         var str = 'case ' + genAsExpr(scase[0], 'none') + ':\n';
-        if (symlib.isSymbol(scase[0]) && scase[0].sym() == 'default') {
+        if (symlib.isSym(scase[0]) && symlib.str(scase[0]) == 'default') {
           str = 'default:\n';
         }
         js += str + genStmts(scase.slice(1), outVar);
@@ -264,7 +266,7 @@ function gen2(sexp, outVar) {
     case 'new':
       // TODO: rewrite as a macro arounc a single-arg form
       // e.g. (new x) is builtin, while (new x y z) is (new (x y z)).
-      return mkExpr('new ' + sexp[1].sym() + '(' + genAsArgs(sexp.slice(2)) + ')', 'new');
+      return mkExpr('new ' + symlib.str(sexp[1]) + '(' + genAsArgs(sexp.slice(2)) + ')', 'new');
     case 'if':
       if (sexp.length < 3 || sexp.length > 4) {
         throw 'bad if';
@@ -309,8 +311,8 @@ function gen2(sexp, outVar) {
           js += ', ';
         }
         var key = sexp[i];
-        if (pjs.isSymbol(key)) {
-          key = key.sym();
+        if (pjs.isSym(key)) {
+          key = symlib.str(key);
         } else if (typeof key == 'string') {
           key = gen.stringQuote(key);
         } else {
@@ -322,8 +324,8 @@ function gen2(sexp, outVar) {
       js += '}';
       return mkExpr(js, 'obj');
     case '#macro':
-      var name = sexp[1].sym();
-      var args = sexp[2].map(function(a) { return a.sym(); });
+      var name = symlib.str(sexp[1]);
+      var args = sexp[2].map(function(a) { return symlib.str(a); });
       var body = sexp.slice(3);
 
       var jsBody = genStmts(body);
@@ -331,7 +333,7 @@ function gen2(sexp, outVar) {
       macros[name] = fn;
       return mkExpr('/* macro definition */', 'lit');
     default:
-      if (macros[sexp[0].sym()]) {
+      if (macros[symlib.str(sexp[0])]) {
         return genMacro(sexp, outVar);
       }
     }

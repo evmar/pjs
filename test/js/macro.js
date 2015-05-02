@@ -14,7 +14,7 @@ switch (typeof(3)) {
     x = "num";
     break;
   default:
-    if (pjs.isSymbol(3)) {
+    if (pjs.isSym(3)) {
       x = "sym";
     } else {
       x = "sexp";
