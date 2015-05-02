@@ -13,7 +13,7 @@ function qq(sexp) {
       return sexp;
     default:
       if (pjs.isSymbol(sexp)) {
-        return [pjs.sym("pjs.sym"), sexp.sym()];
+        return [pjs.sym("pjs.sym"), Symbol.keyFor(sexp)];
       } else {
         if (sexp.length == 2) {
           if (pjs.isSymbol(sexp[0], "uq")) {

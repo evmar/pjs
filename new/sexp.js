@@ -75,7 +75,7 @@ Reader.prototype.read = function() {
         return [sym("uq"), this.read()];
       case ":":
         var symbol = this.read();
-        return [sym("pjs.sym"), symbol.sym()];
+        return [sym("pjs.sym"), Symbol.keyFor(symbol)];
       default:
         if (!isAtomChar(c)) {
           throw "bad char " + c + " at offset " + this.ofs;
