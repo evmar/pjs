@@ -13,3 +13,9 @@
 ;; limitations under the License.
 
 (var x (fn (y) (+ 1 y)))
+
+(var x (caseSexp 3
+  (string "str")
+  (number "num")
+  (symbol "sym")
+  (sexp "sexp")))

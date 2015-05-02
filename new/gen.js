@@ -329,12 +329,13 @@ for (var __pjs_1 = 0; __pjs_1 < unops.length; ++__pjs_1) {
   builtins[op] = genUnOp;
 }
 var macros = {
-  "fn": macro.fn
+  "fn": macro.fn,
+  "caseSexp": macro.caseSexp
 };
 
-function runMacro(f, sexp) {
+function runMacro(f, sexp, outVar) {
   var code = f.apply(null, sexp.slice(1));
-  return gen(code);
+  return gen(code, outVar);
 }
 
 function genAsArgs(args) {
@@ -350,7 +351,7 @@ function genForm(sexp, outVar) {
       return builtins[op](sexp, outVar);
     }
     if (op in macros) {
-      return runMacro(macros[op], sexp);
+      return runMacro(macros[op], sexp, outVar);
     }
   }
   return genCall(sexp, outVar);

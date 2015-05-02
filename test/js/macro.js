@@ -2,4 +2,22 @@
 var x = function(y) {
   return 1 + y;
 };
-var x = caseSexp(3, string("str"), number("num"));
+var x;
+switch (typeof(3)) {
+  case "undefined":
+    throw new Error("undefined sexp");
+    break;
+  case "string":
+    x = "str";
+    break;
+  case "number":
+    x = "num";
+    break;
+  default:
+    if (pjs.isSymbol(3)) {
+      x = "sym";
+    } else {
+      x = "sexp";
+    }
+    break;
+}
