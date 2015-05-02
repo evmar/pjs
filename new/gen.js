@@ -330,7 +330,9 @@ for (var __pjs_1 = 0; __pjs_1 < unops.length; ++__pjs_1) {
 }
 var macros = {
   "fn": macro.fn,
-  "caseSexp": macro.caseSexp
+  "caseSexp": macro.caseSexp,
+  "forEach": macro.forEach,
+  "assert": macro.assert
 };
 
 function runMacro(f, sexp, outVar) {

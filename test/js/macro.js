@@ -21,3 +21,10 @@ switch (typeof(3)) {
     }
     break;
 }
+for (var __pjs_1 = 0; __pjs_1 < [bar, baz].length; ++__pjs_1) {
+  var foo = [bar, baz][__pjs_1];
+  console.log(foo);
+}
+if (!(3 == 3)) {
+  throw new Error("equal");
+}

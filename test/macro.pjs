@@ -19,3 +19,8 @@
   (number "num")
   (symbol "sym")
   (sexp "sexp")))
+
+(forEach foo (list bar baz)
+         (console.log foo))
+
+(assert (== 3 3) "equal")
