@@ -10,7 +10,8 @@ function caseSexp(sexp) {
     ["undefined", [pjs.sym("throw"), [pjs.sym("new"), pjs.sym("Error"), "undefined sexp"]]],
     ["string", pjs.assoc(cases, pjs.sym("string"))],
     ["number", pjs.assoc(cases, pjs.sym("number"))],
-    [pjs.sym("default"), [pjs.sym("if"), [pjs.sym("pjs.isSymbol"), sexp], pjs.assoc(cases, pjs.sym("symbol")), pjs.assoc(cases, pjs.sym("sexp"))]]
+    ["symbol", pjs.assoc(cases, pjs.sym("symbol"))],
+    [pjs.sym("default"), pjs.assoc(cases, pjs.sym("sexp"))]
   ];
 }
 exports.caseSexp = caseSexp;

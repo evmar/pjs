@@ -7,12 +7,10 @@ function toStr(sexp) {
       return "\x22" + sexp + "\x22";
     case "number":
       return "" + sexp;
+    case "symbol":
+      return sexp.sym();
     default:
-      if (pjs.isSymbol(sexp)) {
-        return sexp.sym();
-      } else {
-        return "(" + sexp.map(toStr).join(" ") + ")";
-      }
+      return "(" + sexp.map(toStr).join(" ") + ")";
   }
 }
 exports.toStr = toStr;

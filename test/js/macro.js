@@ -13,12 +13,11 @@ switch (typeof(3)) {
   case "number":
     x = "num";
     break;
+  case "symbol":
+    x = "sym";
+    break;
   default:
-    if (pjs.isSymbol(3)) {
-      x = "sym";
-    } else {
-      x = "sexp";
-    }
+    x = "sexp";
     break;
 }
 for (var __pjs_1 = 0; __pjs_1 < [bar, baz].length; ++__pjs_1) {

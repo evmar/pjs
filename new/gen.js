@@ -367,12 +367,10 @@ function gen(sexp, outVar) {
       return snippet(stringQuote(sexp), "lit");
     case "number":
       return snippet(sexp, "lit");
+    case "symbol":
+      return snippet(sexp.sym(), "lit");
     default:
-      if (pjs.isSymbol(sexp)) {
-        return snippet(sexp.sym(), "lit");
-      } else {
-        return genForm(sexp, outVar);
-      }
+      return genForm(sexp, outVar);
   }
 }
 
