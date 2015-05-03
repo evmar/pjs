@@ -29,8 +29,8 @@ function get(name) {
   }
   return s;
 }
-genSym = ({
-  num: 0,
+genSym = {
+  num: 1,
   peek: function() {
     return "__pjs_" + genSym.num;
   },
@@ -39,7 +39,7 @@ genSym = ({
     ++genSym.num;
     return sym;
   }
-});
+};
 exports.isSym = isSym;
 exports.get = get;
 exports.str = str;
