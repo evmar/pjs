@@ -35,3 +35,9 @@ switch (z) {
   case 1:
     return 3;
 }
+var varargjs;
+if (vararg) {
+  varargjs = jsStmt([pjs.sym("var"), vararg, [pjs.sym("Array.prototype.slice.call"), pjs.sym("arguments"), i]]);
+} else {
+  varargjs = "";
+}

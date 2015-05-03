@@ -39,9 +39,6 @@ function showError(sexp, text) {
 }
 
 function jsStmt(sexp, outVar) {
-  if (sexp.length == 0) {
-    return ";";
-  }
   var g = gen(sexp, outVar);
   if (!g.prec) {
     return g.code;

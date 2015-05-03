@@ -29,4 +29,10 @@
             (3 4))))
 
 (var x (switch y (1 2)))
-(switch z (1 (return 3))))
+(switch z (1 (return 3)))
+
+(var varargjs
+     (if vararg
+       (jsStmt `(var ,vararg
+                     (Array.prototype.slice.call arguments ,i)))
+       ""))
