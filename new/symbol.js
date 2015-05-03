@@ -29,6 +29,18 @@ function get(name) {
   }
   return s;
 }
+genSym = ({
+  num: 0,
+  peek: function() {
+    return "__pjs_" + genSym.num;
+  },
+  take: function() {
+    var sym = genSym.peek();
+    ++genSym.num;
+    return sym;
+  }
+});
 exports.isSym = isSym;
 exports.get = get;
 exports.str = str;
+exports.genSym = genSym;
