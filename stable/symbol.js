@@ -3,13 +3,14 @@ function Symbol(name) {
   this.symbol = name;
 }
 Symbol.prototype.toString = function() {
-  return "sym:" + this.symbol + "";
-};
-Symbol.prototype.sym = function() {
-  return this.symbol;
+  return "sym(" + this.symbol + ")";
 };
 
-function isSymbol(obj, match) {
+function str(sym) {
+  return sym.symbol;
+}
+
+function isSym(obj, match) {
   if (!(obj instanceof Symbol)) {
     return false;
   }
@@ -20,7 +21,7 @@ function isSymbol(obj, match) {
 }
 var symbols = {};
 
-function sym(name) {
+function get(name) {
   var s = symbols[name];
   if (!s) {
     s = new Symbol(name);
@@ -28,5 +29,6 @@ function sym(name) {
   }
   return s;
 }
-exports.isSymbol = isSymbol;
-exports.sym = sym;
+exports.isSym = isSym;
+exports.get = get;
+exports.str = str;

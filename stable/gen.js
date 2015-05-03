@@ -53,7 +53,7 @@ function jsStmt(sexp, outVar) {
   if (outVar) {
     return outVar + " = " + code + ";";
   }
-  if (!symlib.isSymbol(sexp[0], "function")) {
+  if (!symlib.isSym(sexp[0], "function")) {
     code += ";";
   }
   return code;
@@ -164,7 +164,7 @@ function genFor(sexp) {
 }
 
 function genFunction(sexp) {
-  if (symlib.isSymbol(sexp[1])) {
+  if (symlib.isSym(sexp[1])) {
     var name = sexp[1].sym();
     var args = sexp[2];
     var body = sexp.slice(3);
@@ -175,7 +175,7 @@ function genFunction(sexp) {
   }
   var vararg = null;
   for (var i = 0; i < args.length; ++i) {
-    if (symlib.isSymbol(args[i], ".")) {
+    if (symlib.isSym(args[i], ".")) {
       vararg = args[i + 1];
       args = args.slice(0, i);
       break;
@@ -224,7 +224,7 @@ function genObj(sexp) {
   for (var i = 1; i < sexp.length; i += 2) {
     var key = sexp[i];
     var val = sexp[i + 1];
-    if (symlib.isSymbol(key)) {
+    if (symlib.isSym(key)) {
       key = key.sym();
     } else {
       if (typeof(key) == "string") {
@@ -257,7 +257,7 @@ function genSwitch(sexp, outVar) {
   var js = "switch (" + cond + ") {\n";
   for (var i = 2; i < sexp.length; ++i) {
     var scase = sexp[i];
-    if (symlib.isSymbol(scase[0], "default")) {
+    if (symlib.isSym(scase[0], "default")) {
       js += "default:\n";
     } else {
       js += "case " + jsExpr(scase[0], "none") + ":\n";
@@ -347,7 +347,7 @@ function genAsArgs(args) {
 }
 
 function genForm(sexp, outVar) {
-  if (symlib.isSymbol(sexp[0])) {
+  if (symlib.isSym(sexp[0])) {
     var op = sexp[0].sym();
     if (op in builtins) {
       return builtins[op](sexp, outVar);
@@ -368,8 +368,8 @@ function gen(sexp, outVar) {
     case "number":
       return snippet(sexp, "lit");
     default:
-      if (pjs.isSymbol(sexp)) {
-        return snippet(sexp.sym(), "lit");
+      if (pjs.isSym(sexp)) {
+        return snippet(sym.str(sexp), "lit");
       } else {
         return genForm(sexp, outVar);
       }

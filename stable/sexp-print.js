@@ -8,8 +8,8 @@ function toStr(sexp) {
     case "number":
       return "" + sexp;
     default:
-      if (pjs.isSymbol(sexp)) {
-        return sexp.sym();
+      if (pjs.isSym(sexp)) {
+        return pjs.sym(sexp);
       } else {
         return "(" + sexp.map(toStr).join(" ") + ")";
       }
