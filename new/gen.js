@@ -333,7 +333,7 @@ var macros = {
   "caseSexp": macro.caseSexp,
   "forEach": macro.forEach,
   "assert": macro.assert,
-  "genSym": symbol.genSym
+  "genSym": symbol.genSym.take
 };
 
 function runMacro(f, sexp, outVar) {
