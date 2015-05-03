@@ -46,7 +46,7 @@ var macros = {
   genSym: genSym.next,
 };
 
-var libmacros = ['fn', 'caseSexp', 'forEach', 'assert'];
+var libmacros = ['fn', 'caseSexp', 'forEach', 'assert', 'map'];
 for (var i = 0; i < libmacros.length; i++) {
   macros[libmacros[i]] = macrolib[libmacros[i]];
 }

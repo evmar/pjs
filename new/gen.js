@@ -333,6 +333,7 @@ var macros = {
   "caseSexp": macro.caseSexp,
   "forEach": macro.forEach,
   "assert": macro.assert,
+  "map": macro.map,
   "genSym": symbol.genSym.take
 };
 

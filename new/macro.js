@@ -34,3 +34,10 @@ function assert(exp, message) {
   ];
 }
 exports.assert = assert;
+
+function map(f, list) {
+  return [
+    [pjs.sym("."), list, pjs.sym("map")], f
+  ];
+}
+exports.map = map;
