@@ -346,6 +346,12 @@ function genAsArgs(args) {
 }
 
 function genForm(sexp, outVar) {
+  if (sexp.length == 0) {
+    if (!!outVar) {
+      throw new Error("empty sexp");
+    }
+    return snippet(";");
+  }
   if (symbol.isSym(sexp[0])) {
     var op = symbol.str(sexp[0]);
     if (op in builtins) {
