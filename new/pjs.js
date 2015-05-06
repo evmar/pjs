@@ -23,7 +23,6 @@ var util = require('./util');
 global.pjs = {
   assoc: util.assoc,
   sym: symlib.get,
-  isSymbol: symlib.isSym,
   isSym: symlib.isSym,
   symStr: symlib.str,
 };
