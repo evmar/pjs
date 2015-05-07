@@ -148,6 +148,16 @@ function genAt(sexp) {
   return snippet(obj + "[" + index + "]", "[]");
 }
 
+function genMacro(sexp) {
+  var name = symbol.str(sexp[1]);
+  var args = sexp[2].map(symbol.str);
+  var body = sexp.slice(3);
+  var jsbody = genStmts(body);
+  var fn = new Function(args.join(","), jsbody);
+  macros[name] = fn;
+  return snippet("/* macro " + name + " */", "none");
+}
+
 function genDo(sexp) {
   return snippet(genStmts(sexp.slice(1)));
 }
@@ -308,6 +318,7 @@ var builtins = {
   "for": genFor,
   "function": genFunction,
   "list": genList,
+  "macro": genMacro,
   "new": genNew,
   "obj": genObj,
   "return": genReturn,

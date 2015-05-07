@@ -28,7 +28,7 @@ global.pjs = {
 };
 
 var args = parseArgs(process.argv.slice(2), {
-  boolean: ['u', 'n'],
+  boolean: ['u', 'o'],
   string: ['_'],
   unknown: function(arg) {
     if (arg[0] === '-') {
@@ -46,7 +46,7 @@ var data = fs.readFileSync(infile);
 var p = sexpp.parse(data);
 // console.log(p);
 
-if (args.n) {
+if (!args.o) {
   var gen = require('./gen');
   js = gen.genStmts(p);
 } else {
