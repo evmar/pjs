@@ -28,3 +28,6 @@ for (var __pjs_1 = 0; __pjs_1 < [bar, baz].length; ++__pjs_1) {
 if (!(3 == 3)) {
   throw new Error("equal");
 }
+/* macro foo */
+;
+4;
