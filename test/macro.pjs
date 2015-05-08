@@ -25,5 +25,4 @@
 
 (assert (== 3 3) "equal")
 
-(macro foo (x) (return (+ 1 x)))
-(foo 3)
+(macro (return (+ 1 3)))
