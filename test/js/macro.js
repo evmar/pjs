@@ -29,3 +29,4 @@ if (!(3 == 3)) {
   throw new Error("equal");
 }
 4;
+[3];

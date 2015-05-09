@@ -330,18 +330,30 @@ var builtins = {
   "return": genReturn,
   "switch": genSwitch,
   "var": genVar,
-  "while": genWhile
+  "while": genWhile,
+  "+": genBinOp,
+  "-": genBinOp,
+  "*": genBinOp,
+  "/": genBinOp,
+  "=": genBinOp,
+  "==": genBinOp,
+  "!=": genBinOp,
+  "<": genBinOp,
+  ">": genBinOp,
+  "<=": genBinOp,
+  ">=": genBinOp,
+  "&&": genBinOp,
+  "||": genBinOp,
+  "+=": genBinOp,
+  "-=": genBinOp,
+  "*=": genBinOp,
+  "/=": genBinOp,
+  "in": genBinOp,
+  "instanceof": genBinOp,
+  "++": genUnOp,
+  "--": genUnOp,
+  "!": genUnOp
 };
-var binops = ["+", "-", "*", "/", "=", "==", "!=", "<", ">", "<=", ">=", "&&", "||", "+=", "-=", "*=", "/=", "in", "instanceof"];
-for (var __pjs_1 = 0; __pjs_1 < binops.length; ++__pjs_1) {
-  var op = binops[__pjs_1];
-  builtins[op] = genBinOp;
-}
-var unops = ["++", "--", "!"];
-for (var __pjs_1 = 0; __pjs_1 < unops.length; ++__pjs_1) {
-  var op = unops[__pjs_1];
-  builtins[op] = genUnOp;
-}
 var macros = {
   "fn": macro.fn,
   "caseSexp": macro.caseSexp,
