@@ -67,13 +67,13 @@ Reader.prototype.read = function() {
         ++this.ofs;
         return str;
       case "`":
-        return [sym("qq"), this.read()];
+        return [sym("`"), this.read()];
       case ",":
         if (this.str[this.ofs] == "@") {
           ++this.ofs;
-          return [sym("uqs"), this.read()];
+          return [sym(",@"), this.read()];
         }
-        return [sym("uq"), this.read()];
+        return [sym(","), this.read()];
       case ":":
         var symbol = this.read();
         return [sym("pjs.sym"), symlib.str(symbol)];

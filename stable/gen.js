@@ -317,7 +317,7 @@ var builtins = {
   "continue": genKeywordStatement,
   "throw": genKeywordStatement,
   ".": genDot,
-  "qq": genQuote,
+  "`": genQuote,
   "at": genAt,
   "do": genDo,
   "if": genIf,
