@@ -23,7 +23,7 @@ function qq(sexp) {
             throw new Error("no uqs here");
           }
         }
-        var parts = [pjs.sym("list")];
+        var parts = [];
         var cur = null;
         var didSplice = false;
         sexp.forEach(function(s) {
@@ -40,9 +40,10 @@ function qq(sexp) {
           }
         });
         if (didSplice) {
+          parts.unshift(pjs.sym("list"));
           return [pjs.sym("[].concat.apply"), pjs.sym("[]"), parts];
         } else {
-          return cur;
+          return parts[0];
         }
       }
   }
