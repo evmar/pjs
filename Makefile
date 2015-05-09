@@ -1,4 +1,4 @@
-.PHONY: all lib diff-lib update-lib test
+.PHONY: all lib diff update test
 all: lib test
 
 NODE := node
