@@ -25,10 +25,9 @@ function qq(sexp) {
         }
         var parts = [];
         var cur = null;
-        var didSplice = false;
-        sexp.forEach(function(s) {
+        for (var __pjs_1 = 0; __pjs_1 < sexp.length; ++__pjs_1) {
+          var s = sexp[__pjs_1];
           if (isSplice(s)) {
-            didSplice = true;
             parts.push(s[1]);
             cur = null;
           } else {
@@ -36,10 +35,10 @@ function qq(sexp) {
               cur = ([pjs.sym("list")]);
               parts.push(cur);
             }
-            cur.push(qq.call(cur, s));
+            cur.push(qq(s));
           }
-        });
-        if (didSplice) {
+        }
+        if (parts.length > 1) {
           parts.unshift(pjs.sym("list"));
           return [pjs.sym("[].concat.apply"), pjs.sym("[]"), parts];
         } else {
