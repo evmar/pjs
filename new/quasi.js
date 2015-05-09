@@ -33,14 +33,14 @@ function qq(sexp) {
             cur = null;
           } else {
             if (!cur) {
-              cur = [pjs.sym("list")];
+              cur = ([pjs.sym("list")]);
               parts.push(cur);
             }
             cur.push(qq.call(cur, s));
           }
         });
         if (didSplice) {
-          return [pjs.sym("[].concat.apply"), [pjs.sym("list")], parts];
+          return [pjs.sym("[].concat.apply"), pjs.sym("[]"), parts];
         } else {
           return cur;
         }
