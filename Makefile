@@ -1,5 +1,5 @@
-.PHONY: all lib diff-lib update-lib test out
-all: lib test out.js
+.PHONY: all lib diff-lib update-lib test
+all: lib test
 
 NODE := node
 #NODE := node_modules/.bin/node-debug
@@ -26,6 +26,3 @@ tests := builtins stmt-expr quasi macro map prec ops literals
 test: $(foreach test,$(tests),test/js/$(test).js)
 test/js/%.js: test/%.pjs $(PJS) lib/*
 	$(NODE) $(PJSCMD) $< $@
-
-out.js: out.pjs $(PJS) lib/* Makefile
-	$(NODE) $(PJSCMD) $< $@ && cat $@
