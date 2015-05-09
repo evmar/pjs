@@ -148,7 +148,7 @@ function genAt(sexp) {
   return snippet(obj + "[" + index + "]", "[]");
 }
 
-function genMacro(sexp) {
+function genDefmacro(sexp) {
   var name = symbol.str(sexp[1]);
   var args = sexp[2].map(symbol.str);
   var body = sexp.slice(3);
@@ -156,6 +156,12 @@ function genMacro(sexp) {
   var fn = new Function(args.join(","), jsbody);
   macros[name] = fn;
   return snippet("/* macro " + name + " */", "none");
+}
+
+function genMacro(sexp) {
+  var body = sexp.slice(1);
+  var f = new Function([], genStmts(body));
+  return gen(f());
 }
 
 function genDo(sexp) {
@@ -324,18 +330,30 @@ var builtins = {
   "return": genReturn,
   "switch": genSwitch,
   "var": genVar,
-  "while": genWhile
+  "while": genWhile,
+  "+": genBinOp,
+  "-": genBinOp,
+  "*": genBinOp,
+  "/": genBinOp,
+  "=": genBinOp,
+  "==": genBinOp,
+  "!=": genBinOp,
+  "<": genBinOp,
+  ">": genBinOp,
+  "<=": genBinOp,
+  ">=": genBinOp,
+  "&&": genBinOp,
+  "||": genBinOp,
+  "+=": genBinOp,
+  "-=": genBinOp,
+  "*=": genBinOp,
+  "/=": genBinOp,
+  "in": genBinOp,
+  "instanceof": genBinOp,
+  "++": genUnOp,
+  "--": genUnOp,
+  "!": genUnOp
 };
-var binops = ["+", "-", "*", "/", "=", "==", "!=", "<", ">", "<=", ">=", "&&", "||", "+=", "-=", "*=", "/=", "in", "instanceof"];
-for (var __pjs_1 = 0; __pjs_1 < binops.length; ++__pjs_1) {
-  var op = binops[__pjs_1];
-  builtins[op] = genBinOp;
-}
-var unops = ["++", "--", "!"];
-for (var __pjs_1 = 0; __pjs_1 < unops.length; ++__pjs_1) {
-  var op = unops[__pjs_1];
-  builtins[op] = genUnOp;
-}
 var macros = {
   "fn": macro.fn,
   "caseSexp": macro.caseSexp,
