@@ -18,6 +18,14 @@ function Reader(str) {
   this.lineOfs = 0;
   this.line = 1;
 }
+Reader.prototype.pos = function(out) {
+  if (!out) {
+    out = {};
+  }
+  out.line = this.line;
+  out.col = this.ofs - this.lineOfs;
+  return out;
+};
 Reader.prototype.read = function() {
   while (this.ofs < this.str.length) {
     var c = this.str[this.ofs];
@@ -38,8 +46,7 @@ Reader.prototype.read = function() {
         continue;
       case "(":
         var sexp = [];
-        sexp.line = this.line;
-        sexp.col = this.ofs - this.lineOfs;
+        this.pos(sexp);
         for (var s;
           (s = this.read()) != null;) {
           sexp.push(s);
@@ -79,7 +86,8 @@ Reader.prototype.read = function() {
         return [sym("pjs.sym"), symlib.str(symbol)];
       default:
         if (!isAtomChar(c)) {
-          throw "bad char " + c + " at offset " + this.ofs;
+          var pos = this.pos();
+          throw new Error("bad char " + c + " at " + pos.line + ":" + pos.col);
         }
         var atom = c;
         for (; this.ofs < this.str.length; ++this.ofs) {

@@ -18,6 +18,7 @@ var parseArgs = require('minimist');
 var sexpp = require('./sexp');
 var symlib = require('./symbol');
 var util = require('./util');
+var sexp_print = require('./sexp-print').toStr;
 
 // Expose a global pjs object so it can be found by macro evals.
 global.pjs = {
@@ -28,7 +29,7 @@ global.pjs = {
 };
 
 var args = parseArgs(process.argv.slice(2), {
-  boolean: ['u', 'o'],
+  boolean: ['u', 'o', 'd'],
   string: ['_'],
   unknown: function(arg) {
     if (arg[0] === '-') {
@@ -45,6 +46,9 @@ var data = fs.readFileSync(infile);
 
 var p = sexpp.parse(data);
 // console.log(p);
+if (args.d) {
+  console.log(sexp_print(p));
+}
 
 if (!args.o) {
   var gen = require('./gen');

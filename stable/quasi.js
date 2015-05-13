@@ -23,26 +23,26 @@ function qq(sexp) {
             throw new Error("no uqs here");
           }
         }
-        var parts = [pjs.sym("list")];
+        var parts = [];
         var cur = null;
-        var didSplice = false;
-        sexp.forEach(function(s) {
+        for (var __pjs_1 = 0; __pjs_1 < sexp.length; ++__pjs_1) {
+          var s = sexp[__pjs_1];
           if (isSplice(s)) {
-            didSplice = true;
             parts.push(s[1]);
             cur = null;
           } else {
             if (!cur) {
-              cur = [pjs.sym("list")];
+              cur = ([pjs.sym("list")]);
               parts.push(cur);
             }
-            cur.push(qq.call(cur, s));
+            cur.push(qq(s));
           }
-        });
-        if (didSplice) {
-          return [pjs.sym("[].concat.apply"), [pjs.sym("list")], parts];
+        }
+        if (parts.length > 1) {
+          parts.unshift(pjs.sym("list"));
+          return [pjs.sym("[].concat.apply"), pjs.sym("[]"), parts];
         } else {
-          return cur;
+          return parts[0];
         }
       }
   }
