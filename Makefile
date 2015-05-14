@@ -24,5 +24,5 @@ update:
 
 tests := builtins stmt-expr quasi macro map prec ops literals quote
 test: $(foreach test,$(tests),test/js/$(test).js)
-test/js/%.js: test/%.pjs $(PJS) lib/*
+test/js/%.js: test/%.pjs $(PJS) $(lib)
 	$(NODE) $(PJSCMD) $< $@
