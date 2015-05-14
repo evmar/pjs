@@ -15,10 +15,12 @@
 var beautify = require('js-beautify').js_beautify;
 var fs = require('fs');
 var parseArgs = require('minimist');
+
+var gen = require('./gen');
+var sexp_print = require('./sexp-print').toStr;
 var sexpp = require('./sexp');
 var symlib = require('./symbol');
 var util = require('./util');
-var sexp_print = require('./sexp-print').toStr;
 
 // Expose a global pjs object so it can be found by macro evals.
 global.pjs = {
@@ -26,6 +28,9 @@ global.pjs = {
   sym: symlib.get,
   isSym: symlib.isSym,
   symStr: symlib.str,
+  quote: {
+    q: gen.stringQuote,
+  },
 };
 
 var args = parseArgs(process.argv.slice(2), {
@@ -51,7 +56,6 @@ if (args.d) {
 }
 
 if (!args.o) {
-  var gen = require('./gen');
   js = gen.genStmts(p);
 } else {
   var gen = require('./old-gen');

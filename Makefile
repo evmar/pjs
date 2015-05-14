@@ -22,7 +22,7 @@ diff:
 update:
 	cp new/* stable
 
-tests := builtins stmt-expr quasi macro map prec ops literals
+tests := builtins stmt-expr quasi macro map prec ops literals quote
 test: $(foreach test,$(tests),test/js/$(test).js)
 test/js/%.js: test/%.pjs $(PJS) lib/*
 	$(NODE) $(PJSCMD) $< $@

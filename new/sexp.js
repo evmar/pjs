@@ -26,6 +26,21 @@ Reader.prototype.pos = function(out) {
   out.col = this.ofs - this.lineOfs;
   return out;
 };
+Reader.prototype.readQuote = function() {
+  var str = "";
+  for (; this.ofs < this.str.length; ++this.ofs) {
+    var c = this.str[this.ofs];
+    if (c == "\x22") {
+      break;
+    }
+    str += c;
+  }
+  if (this.str[this.ofs] != "\x22") {
+    throw new Error("expected quote, got EOF at " + pos.line + ":" + pos.col);
+  }
+  ++this.ofs;
+  return str;
+};
 Reader.prototype.read = function() {
   while (this.ofs < this.str.length) {
     var c = this.str[this.ofs];
@@ -60,19 +75,7 @@ Reader.prototype.read = function() {
         --this.ofs;
         return null;
       case "\x22":
-        var str = "";
-        for (; this.ofs < this.str.length; ++this.ofs) {
-          var c = this.str[this.ofs];
-          if (c == "\x22") {
-            break;
-          }
-          str += c;
-        }
-        if (this.str[this.ofs] != "\x22") {
-          throw "expected rparen";
-        }
-        ++this.ofs;
-        return str;
+        return this.readQuote();
       case "`":
         return [sym("`"), this.read()];
       case ",":
@@ -84,6 +87,10 @@ Reader.prototype.read = function() {
       case ":":
         var symbol = this.read();
         return [sym("pjs.sym"), symlib.str(symbol)];
+      case "#":
+        var quoter = this.read();
+        var text = this.read();
+        return [sym("#"), quoter, text];
       default:
         if (!isAtomChar(c)) {
           var pos = this.pos();

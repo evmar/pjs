@@ -137,9 +137,19 @@ function genDot(sexp, outVar) {
   return snippet(obj + "." + attr, ".");
 }
 
-function genQuote(sexp) {
+function genQuasiQuote(sexp) {
   var quoted = jsExpr(quasi.qq(sexp[1]), "none");
   return snippet(quoted, "none");
+}
+
+function genQuote(sexp) {
+  var quoterName = symbol.str(sexp[1]);
+  var text = sexp[2];
+  var quoter = pjs.quote[quoterName];
+  if (!quoter) {
+    throw new Error("unknown quoter: " + quoterName);
+  }
+  return snippet(quoter(text));
 }
 
 function genAt(sexp) {
@@ -317,7 +327,8 @@ var builtins = {
   "continue": genKeywordStatement,
   "throw": genKeywordStatement,
   ".": genDot,
-  "`": genQuote,
+  "`": genQuasiQuote,
+  "#": genQuote,
   "at": genAt,
   "do": genDo,
   "if": genIf,
