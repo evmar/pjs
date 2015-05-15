@@ -3,3 +3,4 @@
 "foo\tbar"
 
 #q"foo"
+;; #q<foo>
