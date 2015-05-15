@@ -3,6 +3,15 @@ var symlib = require("./symbol.js");
 var sym = symlib.get;
 var symbolRE = new RegExp("(" + "[a-zA-Z_][a-zA-Z_.0-9]*" + "|" + "[a-zA-Z_.\\[\\]0-9&!=|+<>#{}*-]+" + ")|.", "g");
 
+function reMatchOfs(re, str, ofs) {
+  re.lastIndex = ofs;
+  var match = re.exec(str);
+  if (!match || !match[1]) {
+    return null;
+  }
+  return match[1];
+}
+
 function isNumber(atom) {
   var re = new RegExp("^\\d+$");
   return re.test(atom);
@@ -89,13 +98,11 @@ Reader.prototype.read = function() {
         return [sym("#"), quoter, text];
       default:
         --this.ofs;
-        symbolRE.lastIndex = this.ofs;
-        var match = symbolRE.exec(this.str);
-        if (!match || !match[1]) {
+        var atom = reMatchOfs(symbolRE, this.str, this.ofs);
+        if (!atom) {
           var pos = this.pos();
           throw new Error("bad char " + c + " at " + pos.line + ":" + pos.col);
         }
-        var atom = match[1];
         this.ofs += atom.length;
         if (isNumber(atom)) {
           return parseInt(atom);
