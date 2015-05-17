@@ -1,0 +1,29 @@
+{
+  "name": "pjs",
+  "version": "1.0.0",
+  "description": "paren javascript",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/martine/pjs.git"
+  },
+  "author": "",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/martine/pjs/issues"
+  },
+  "homepage": "https://github.com/martine/pjs#readme",
+  "bin": {
+    "pjs": "./stable/pjs.js"
+  },
+  "dependencies": {
+    "js-beautify": "^1.5.5",
+    "minimist": "^1.1.1"
+  }
+}
