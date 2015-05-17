@@ -33,6 +33,8 @@ Reader.prototype.pos = function(out) {
 };
 Reader.prototype.readQuote = function() {
   var str = "";
+  var open = this.str[this.ofs];
+  ++this.ofs;
   for (; this.ofs < this.str.length; ++this.ofs) {
     var c = this.str[this.ofs];
     if (c == "\x22") {
@@ -40,7 +42,8 @@ Reader.prototype.readQuote = function() {
     }
     str += c;
   }
-  if (this.str[this.ofs] != "\x22") {
+  var close = this.str[this.ofs];
+  if (open != close) {
     throw new Error("expected quote, got EOF at " + pos.line + ":" + pos.col);
   }
   ++this.ofs;
@@ -80,6 +83,7 @@ Reader.prototype.read = function() {
         --this.ofs;
         return null;
       case "\x22":
+        --this.ofs;
         return this.readQuote();
       case "`":
         return [sym("`"), this.read()];
@@ -94,7 +98,7 @@ Reader.prototype.read = function() {
         return [sym("pjs.sym"), symlib.str(symbol)];
       case "#":
         var quoter = this.read();
-        var text = this.read();
+        var text = this.readQuote();
         return [sym("#"), quoter, text];
       default:
         --this.ofs;
