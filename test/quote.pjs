@@ -1,6 +1,10 @@
-"foo"
+(function quotes ()
+  "foo"
 
-"foo\tbar"
+  "foo\tbar"
 
-#q"foo"
-;; #q<foo>
+  #q"foo"
+  ;; #q<foo>
+
+  #re"blah"
+  )

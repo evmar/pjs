@@ -30,6 +30,7 @@ global.pjs = {
   symStr: symlib.str,
   quote: {
     q: gen.stringQuote,
+    re: gen.reQuote,
   },
 };
 

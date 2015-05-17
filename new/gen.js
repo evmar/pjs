@@ -93,6 +93,11 @@ function stringQuote(str) {
 }
 exports.stringQuote = stringQuote;
 
+function reQuote(str) {
+  return "/" + str + "/";
+}
+exports.reQuote = reQuote;
+
 function genBinOp(sexp) {
   var op = symbol.str(sexp[0]);
   var args = sexp.slice(1);
@@ -149,7 +154,7 @@ function genQuote(sexp) {
   if (!quoter) {
     throw new Error("unknown quoter: " + quoterName);
   }
-  return snippet(quoter(text));
+  return snippet(quoter(text), "lit");
 }
 
 function genAt(sexp) {
