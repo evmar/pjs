@@ -4,7 +4,7 @@
   "foo\tbar"
 
   #q"foo"
-  ;; #q<foo>
+  #q<foo>
 
-  #re"blah"
+  #re/blah/
   )

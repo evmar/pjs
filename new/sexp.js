@@ -31,20 +31,34 @@ Reader.prototype.pos = function(out) {
   out.col = this.ofs - this.lineOfs;
   return out;
 };
+Reader.prototype.errorAtPoint = function() {
+  var message = [].join.call(arguments, "");
+  var pos = this.pos();
+  return new Error(message + " at " + pos.line + ":" + pos.col);
+};
 Reader.prototype.readQuote = function() {
   var str = "";
   var open = this.str[this.ofs];
   ++this.ofs;
+  var close;
+  switch (open) {
+    case "<":
+      close = ">";
+      break;
+    default:
+      close = open;
+      break;
+  }
   for (; this.ofs < this.str.length; ++this.ofs) {
     var c = this.str[this.ofs];
-    if (c == "\x22") {
+    if (c == close) {
       break;
     }
     str += c;
   }
-  var close = this.str[this.ofs];
-  if (open != close) {
-    throw new Error("expected quote, got EOF at " + pos.line + ":" + pos.col);
+  var actualClose = this.str[this.ofs];
+  if (close != actualClose) {
+    throw this.errorAtPoint("expected end of quote ", close, ", got ", actualClose);
   }
   ++this.ofs;
   return str;
@@ -105,7 +119,7 @@ Reader.prototype.read = function() {
         var atom = reMatchOfs(symbolRE, this.str, this.ofs);
         if (!atom) {
           var pos = this.pos();
-          throw new Error("bad char " + c + " at " + pos.line + ":" + pos.col);
+          throw this.errorAtPoint("bad char ", c);
         }
         this.ofs += atom.length;
         if (isNumber(atom)) {

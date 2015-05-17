@@ -3,5 +3,6 @@ function quotes() {
   "foo";
   "foo\tbar";
   "foo";
+  "foo";
   /blah/;
 }
